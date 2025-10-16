@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyClass - Herramientas Académicas</title>
+    <meta name="description" content="Accede a nuestra biblioteca virtual y herramientas de cálculo especializadas para matemáticas, física, química y más.">
+    <meta name="keywords" content="calculadora, herramientas académicas, biblioteca virtual, física, matemáticas">
+    <link rel="canonical" href="https://easyclass10.github.io/easyclass10/herramientas">
+    <link rel="icon" href="nk.png" type="image/x-icon">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .tool-card {
+            background-color: var(--light-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid #282828;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(29, 185, 84, 0.1), transparent);
+            transition: left 0.6s;
+        }
+        
+        .tool-card:hover::before {
+            left: 100%;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(29, 185, 84, 0.2);
+            border-color: var(--primary-green);
+        }
+        
+        .tool-icon {
+            font-size: 2.5rem;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+        
+        .tool-card h4 {
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        .tool-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+        
+        .tool-card a {
+            align-self: flex-start;
+        }
+        
+        .section-title {
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+        
+        .section-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .library-card {
+            background: linear-gradient(135deg, var(--primary-green), #16A34A);
+            padding: 3rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(29, 185, 84, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .library-card:hover {
+            transform: scale(1.02);
+        }
+        
+        .library-card h3 {
+            color: white;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+        
+        .library-card p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn-library {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 12px 40px;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .btn-library:hover {
+            background-color: white;
+            color: var(--primary-green);
+        }
+    </style>
+</head>
+<body>
+    <script defer src="nav.js"></script>
+    <div id="navBarra"></div>
+
+    <header class="hero-section d-flex align-items-center" style="min-height: 60vh;">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold mb-3" data-aos="fade-down">Herramientas Académicas</h1>
+            <p class="lead mb-4" data-aos="fade-up" data-aos-delay="200">Accede a calculadoras especializadas y nuestra biblioteca virtual para potenciar tu aprendizaje. 🛠️</p>
+            <div data-aos="fade-up" data-aos-delay="400">
+                <a href="index.html" class="btn btn-back btn-success btn-lg px-5 py-3 me-3">
+                    <i class="fas fa-arrow-left me-2"></i> Volver
+                </a>
+                <a href="#herramientas" class="btn btn-outline-light btn-lg px-5 py-3">Ver Herramientas</a>
+            </div>  
+        </div>
+    </header>
+
+    <section class="py-5">
+        <div class="container">
+            <div class="library-card" data-aos="fade-up">
+                <i class="fas fa-book fa-3x mb-3" style="color: white;"></i>
+                <h3>Biblioteca Virtual</h3>
+                <p>Accede a miles de recursos, documentos, libros y materiales de estudio para complementar tu aprendizaje.</p>
+                <a href="https://drive.google.com/drive/folders/12OWtoVHq22UEZvsWO7vPn0PgAw6CSL4L?usp=sharing" target="_blank" class="btn-library">Ir a la Biblioteca</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="herramientas" class="py-5 bg-dark">
+        <div class="container">
+            <h2 class="section-title" data-aos="fade-up">Nuestras Herramientas de Cálculo</h2>
+            <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">Utiliza nuestras calculadoras especializadas para resolver problemas de matemáticas, física, química y más.</p>
+            
+            <div class="tools-grid">
+                <!-- Calculadora Básica -->
+                <div class="tool-card" data-aos="fade-up">
+                    <i class="fas fa-calculator tool-icon"></i>
+                    <h4>Calculadora Básica</h4>
+                    <p>Operaciones de suma, resta, multiplicación y división con interfaz intuitiva.</p>
+                    <a href="calculadora.html" class="btn btn-success">Usar Herramienta</a>
+                </div>
+
+                <!-- Interpolador Lineal -->
+                <div class="tool-card" data-aos="fade-up" data-aos-delay="50">
+                    <i class="fas fa-chart-line tool-icon"></i>
+                    <h4>Interpolador Lineal</h4>
+                    <p>Calcula valores interpolados en funciones lineales. Perfecto para análisis de datos.</p>
+                    <a href="inter/index.html" class="btn btn-success">Usar Herramienta</a>
+                </div>
+
+                <!-- Mecánica de Fluidos -->
+                <div class="tool-card" data-aos="fade-up" data-aos-delay="100">
+                    <i class="fas fa-water tool-icon"></i>
+                    <h4>Mecánica de Fluidos</h4>
+                    <p>Cálculo del número de Reynolds y factor de fricción para análisis de fluidos.</p>
+                    <a href="fluido/index.html" class="btn btn-success">Usar Herramienta</a>
+                </div>
+
+                <!-- Convertidor Masa-Moles -->
+                <div class="tool-card" data-aos="fade-up" data-aos-delay="150">
+                    <i class="fas fa-flask tool-icon"></i>
+                    <h4>Masa, Moles y Átomos</h4>
+                    <p>Convierte entre masa, moles, átomos y moléculas. Esencial para química.</p>
+                    <a href="conver/index.html" class="btn btn-success">Usar Herramienta</a>
+                </div>
+
+                <!-- Calculadora de Dinero -->
+                <div class="tool-card" data-aos="fade-up" data-aos-delay="200">
+                    <i class="fas fa-coins tool-icon"></i>
+                    <h4>Calculadora de Dinero</h4>
+                    <p>Operaciones y conversiones de moneda para análisis financiero.</p>
+                    <a href="dinero/index.html" class="btn btn-success">Usar Herramienta</a>
+                </div>
+
+                <!-- Cálculos de Vectores -->
+                <div class="tool-card" data-aos="fade-up" data-aos-delay="250">
+                    <i class="fas fa-arrows-alt tool-icon"></i>
+                    <h4>Operaciones Vectoriales</h4>
+                    <p>Realiza cálculos entre vectores: suma, resta, producto punto y cruz.</p>
+                    <a href="vector/index.html" class="btn btn-success">Usar Herramienta</a>
+                </div>
+
+                <!-- Convertidor de Temperatura -->
+                <div class="tool-card" data-aos="fade-up" data-aos-delay="300">
+                    <i class="fas fa-thermometer-half tool-icon"></i>
+                    <h4>Convertidor de Temperatura</h4>
+                    <p>Convierte entre Celsius, Fahrenheit, Kelvin y más escalas de temperatura.</p>
+                    <a href="convertidordetemperatura/index.html" class="btn btn-success">Usar Herramienta</a>
+                </div>
+
+                <!-- Recta en 3D -->
+                <div class="tool-card" data-aos="fade-up" data-aos-delay="350">
+                    <i class="fas fa-cube tool-icon"></i>
+                    <h4>Ecuación de Recta en 3D</h4>
+                    <p>Calcula y analiza ecuaciones de rectas en el espacio tridimensional.</p>
+                    <a href="recta3d/index.html" class="btn btn-success">Usar Herramienta</a>
+                </div>
+
+                <!-- Plano en 3D -->
+                <div class="tool-card" data-aos="fade-up" data-aos-delay="400">
+                    <i class="fas fa-layer-group tool-icon"></i>
+                    <h4>Ecuación de Plano en 3D</h4>
+                    <p>Cálculo de ecuaciones de planos en el espacio tridimensional.</p>
+                    <a href="plano/index.html" class="btn btn-success">Usar Herramienta</a>
+                </div>
+
+                <!-- Determinante de Matriz -->
+                <div class="tool-card" data-aos="fade-up" data-aos-delay="450">
+                    <i class="fas fa-table tool-icon"></i>
+                    <h4>Determinante de Matriz 3x3</h4>
+                    <p>Calcula el determinante de matrices de 3x3 para análisis algebraico.</p>
+                    <a href="determinante/index.html" class="btn btn-success">Usar Herramienta</a>
+                </div>
+
+                <!-- Análisis de Derivadas -->
+                <div class="tool-card" data-aos="fade-up" data-aos-delay="500">
+                    <i class="fas fa-curve tool-icon"></i>
+                    <h4>Análisis de Derivadas</h4>
+                    <p>Primera y segunda derivada: extremos, concavidad, inflexión y gráficas de funciones.</p>
+                    <a href="derivadas/index.html" class="btn btn-success">Usar Herramienta</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contacto" class="py-5 bg-dark">
+        <div class="container text-center">
+            <h2 class="mb-4">¿Necesitas Ayuda?</h2>
+            <p class="lead mb-4">Contáctanos y obtén soporte en el uso de nuestras herramientas.</p>
+            <a href="https://wa.me/573044435307?text=Hola,%20tengo%20dudas%20sobre%20las%20herramientas" class="btn btn-success btn-lg mb-4">Hablar con un Asesor</a>
+            <div class="social-icons mt-4">
+                <a target="_blank" href="https://wa.me/573044435307" class="social-link" aria-label="Contacto por WhatsApp">
+                    <i class="fab fa-whatsapp me-2" style="color: #25D366;"></i> WhatsApp
+                </a>
+                <a target="_blank" href="http://bit.ly/easyclassig" class="social-link" aria-label="Perfil de Instagram">
+                    <i class="fab fa-instagram me-2" style="color: #E4405F;"></i> Instagram
+                </a>
+                <a target="_blank" href="https://www.facebook.com/Andres-Bueno-502366350132053" class="social-link" aria-label="Página de Facebook">
+                    <i class="fab fa-facebook me-2" style="color: #1877F2;"></i> Facebook
+                </a>
+                <a target="_blank" href="mailto:easyclass.1help@gmail.com" class="social-link" aria-label="Enviar correo electrónico">
+                    <i class="fas fa-envelope me-2" style="color: #D44638;"></i> Gmail
+                </a>
+                <a target="_blank" href="https://www.youtube.com/channel/UChtKjBiS0nCyyq_288JD31Q" class="social-link" aria-label="Canal de YouTube">
+                    <i class="fab fa-youtube me-2" style="color: #FF0000;"></i> YouTube
+                </a>
+            </div>
+            <p class="mt-4 text-muted"><small>&copy; 2025 EasyClass. Todos los derechos reservados.</small></p>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/573044435307?text=Hola,%20estoy%20interesado%20en%20sus%20servicios." class="whatsapp-flotante" target="_blank">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        const nav = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "EasyClass - Herramientas Académicas",
+      "description": "Herramientas de cálculo y biblioteca virtual para potenciar el aprendizaje académico",
+      "provider": {
+        "@type": "EducationalOrganization",
+        "name": "EasyClass"
+      }
+    }
+    </script>
+
+</body>
+</html>

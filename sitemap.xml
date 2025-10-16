@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://easyclass10.github.io/easyclass10/index.html</loc>
+        <lastmod>2024-01-24</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
+    <url>
+        <loc>https://easyclass10.github.io/easyclass10/servicios.html</loc>
+        <lastmod>2024-01-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://easyclass10.github.io/easyclass10/cursos.html</loc>
+        <lastmod>2024-01-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
+    <url>
+        <loc>https://easyclass10.github.io/easyclass10/herramientas.html</loc>
+        <lastmod>2024-01-24</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+</urlset>

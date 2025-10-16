@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyClass - Herramientas Académicas</title>
+    <meta name="description" content="Accede a nuestra biblioteca virtual y herramientas de cálculo especializadas para matemáticas, física, química y más.">
+    <meta name="keywords" content="calculadora, herramientas académicas, biblioteca virtual, física, matemáticas">
+    <link rel="canonical" href="https://easyclass10.github.io/easyclass10/herramientas">
+    <link rel="icon" href="nk.png" type="image/x-icon">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Servicios principales */
+        .services-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .service-showcase-card {
+            background: linear-gradient(135deg, var(--light-bg) 0%, #252525 100%);
+            padding: 2.5rem;
+            border-radius: 15px;
+            border: 1px solid #333;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-showcase-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(29, 185, 84, 0.15), transparent);
+            transition: left 0.6s;
+        }
+
+        .service-showcase-card:hover::before {
+            left: 100%;
+        }
+
+        .service-showcase-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 50px rgba(29, 185, 84, 0.25);
+            border-color: var(--primary-green);
+        }
+
+        .service-showcase-icon {
+            font-size: 3rem;
+            color: var(--primary-green);
+            margin-bottom: 1.5rem;
+            display: inline-block;
+        }
+
+        .service-showcase-card h3 {
+            color: var(--text-color);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .service-showcase-card p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .subjects-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.7rem;
+            margin-top: 1.5rem;
+        }
+
+        .subject-badge {
+            background: rgba(29, 185, 84, 0.15);
+            color: var(--primary-green);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid var(--primary-green);
+            transition: all 0.2s ease;
+        }
+
+        .subject-badge:hover {
+            background: var(--primary-green);
+            color: var(--dark-bg);
+        }
+
+        /* Sección de herramientas */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .tool-card {
+            background-color: var(--light-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid #282828;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(29, 185, 84, 0.1), transparent);
+            transition: left 0.6s;
+        }
+        
+        .tool-card:hover::before {
+            left: 100%;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(29, 185, 84, 0.2);
+            border-color: var(--primary-green);
+        }
+        
+        .tool-icon {
+            font-size: 2.5rem;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+        
+        .tool-card h4 {
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        .tool-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+        
+        .tool-card a {
+            align-self: flex-start;
+        }
+        
+        .section-title {
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+        
+        .section-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .library-card {
+            background: linear-gradient(135deg, var(--primary-green), #16A34A);
+            padding: 3rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(29, 185, 84, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .library-card:hover {
+            transform: scale(1.02);
+        }
+        
+        .library-card h3 {
+            color: white;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+        
+        .library-card p {
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 1.5rem;
+        }
+        
+        .btn-library {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 12px 40px;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .btn-library:hover {
+            background-color: white;
+            color: var(--primary-green);
+        }
+
+        .divider-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary-green), transparent);
+            margin: 3rem 0;
+        }
+    </style>
+</head>
+<body>
+    <script defer src="nav.js"></script>
+    <div id="navBarra"></div>
+
+    <header class="hero-section d-flex align-items-center" style="min-height: 60vh;">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold mb-3" data-aos="fade-down">Servicios Profesionales y Académicos</h1>
+            <p class="lead mb-4" data-aos="fade-up" data-aos-delay="200">Todo lo que necesitas para potenciar tu aprendizaje en un solo lugar. 🚀</p>
+            <div data-aos="fade-up" data-aos-delay="400">
+                <a href="index.html" class="btn btn-back btn-success btn-lg px-5 py-3 me-3">
+                    <i class="fas fa-arrow-left me-2"></i> Volver
+                </a>
+                <a href="#servicios" class="btn btn-outline-light btn-lg px-5 py-3">Ver Servicios</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sección de Servicios Principales -->
+    <section id="servicios" class="py-5">
+        <div class="container">
+            <h2 class="section-title text-center mb-5" data-aos="fade-up">Nuestros Servicios Académicos</h2>
+            
+            <div class="services-showcase">
+                <!-- Clases Particulares -->
+                <div class="service-showcase-card" data-aos="fade-up">
+                    <div class="service-showcase-icon">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <h3>Clases Particulares Online</h3>
+                    <p>Refuerza tus conocimientos con clases 1 a 1 en vivo con tutores expertos. Aprende a tu ritmo y resuelve todas tus dudas.</p>
+                    <div class="subjects-list">
+                        <span class="subject-badge">Matemáticas</span>
+                        <span class="subject-badge">Física</span>
+                        <span class="subject-badge">Química</span>
+                        <span class="subject-badge">Programación</span>
+                        <span class="subject-badge">Biología</span>
+                        <span class="subject-badge">Inglés</span>
+                    </div>
+                    <a href="https://wa.me/573044435307?text=Hola,%20me%20interesan%20las%20clases%20particulares" target="_blank" class="btn btn-success mt-3">Solicitar Clase</a>
+                </div>
+
+                <!-- Desarrollo de Trabajos -->
+                <div class="service-showcase-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-showcase-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3>Desarrollo de Trabajos</h3>
+                    <p>Te guiamos en la elaboración de ensayos, informes, proyectos y tesis, asegurando calidad, originalidad y estructura académica.</p>
+                    <div class="subjects-list">
+                        <span class="subject-badge">Ensayos</span>
+                        <span class="subject-badge">Informes</span>
+                        <span class="subject-badge">Proyectos</span>
+                        <span class="subject-badge">Tesis</span>
+                        <span class="subject-badge">Investigación</span>
+                        <span class="subject-badge">Presentaciones</span>
+                    </div>
+                    <a href="https://wa.me/573044435307?text=Hola,%20necesito%20ayuda%20con%20un%20trabajo%20académico" target="_blank" class="btn btn-success mt-3">Contratar Servicio</a>
+                </div>
+
+                <!-- Asesorías Especializadas -->
+                <div class="service-showcase-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-showcase-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h3>Asesorías Especializadas</h3>
+                    <p>Resolvemos tus dudas puntuales y te preparamos para exámenes, entrevistas y presentaciones importantes con estrategias efectivas.</p>
+                    <div class="subjects-list">
+                        <span class="subject-badge">Preparación ICFES</span>
+                        <span class="subject-badge">Exámenes</span>
+                        <span class="subject-badge">Admisión</span>
+                        <span class="subject-badge">Entrevistas</span>
+                        <span class="subject-badge">Oratoria</span>
+                        <span class="subject-badge">Consultoría</span>
+                    </div>
+                    <a href="https://wa.me/573044435307?text=Hola,%20necesito%20una%20asesoría%20especializada" target="_blank" class="btn btn-success mt-3">Agendar Asesoría</a>
+                </div>
+            </div>
+
+            <div class="divider-line"></div>
+
+            <!-- Desarrollo de Proyectos Tecnológicos -->
+            <h2 class="section-title text-center mb-5 mt-5" data-aos="fade-up">Servicios Tecnológicos</h2>
+            
+            <div class="services-showcase">
+                <!-- Agentes de IA -->
+                <div class="service-showcase-card" data-aos="fade-up">
+                    <div class="service-showcase-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>Desarrollo de Agentes IA</h3>
+                    <p>Creamos soluciones inteligentes con inteligencia artificial, chatbots, automatización de procesos y análisis predictivo para optimizar tus proyectos.</p>
+                    <div class="subjects-list">
+                        <span class="subject-badge">Chatbots IA</span>
+                        <span class="subject-badge">Automatización</span>
+                        <span class="subject-badge">Machine Learning</span>
+                        <span class="subject-badge">NLP</span>
+                        <span class="subject-badge">Análisis Datos</span>
+                        <span class="subject-badge">APIs</span>
+                    </div>
+                    <a href="https://wa.me/573044435307?text=Hola,%20me%20interesa%20un%20agente%20de%20IA" target="_blank" class="btn btn-success mt-3">Consultar Proyecto</a>
+                </div>
+
+                <!-- Páginas Web -->
+                <div class="service-showcase-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-showcase-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3>Diseño de Páginas Web</h3>
+                    <p>Diseñamos y desarrollamos sitios web modernos, responsivos y SEO optimizados. Presencia digital profesional que convierte visitas en clientes.</p>
+                    <div class="subjects-list">
+                        <span class="subject-badge">WordPress</span>
+                        <span class="subject-badge">HTML/CSS</span>
+                        <span class="subject-badge">Responsive</span>
+                        <span class="subject-badge">SEO</span>
+                        <span class="subject-badge">E-commerce</span>
+                        <span class="subject-badge">Portafolios</span>
+                    </div>
+                    <a href="https://wa.me/573044435307?text=Hola,%20necesito%20una%20página%20web" target="_blank" class="btn btn-success mt-3">Solicitar Cotización</a>
+                </div>
+
+                <!-- Aplicaciones Web -->
+                <div class="service-showcase-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-showcase-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3>Aplicaciones Web Personalizadas</h3>
+                    <p>Desarrollamos aplicaciones web dinámicas y funcionales. Desde sistemas de gestión hasta plataformas complejas con tecnologías modernas.</p>
+                    <div class="subjects-list">
+                        <span class="subject-badge">React</span>
+                        <span class="subject-badge">Node.js</span>
+                        <span class="subject-badge">Python</span>
+                        <span class="subject-badge">Bases de Datos</span>
+                        <span class="subject-badge">APIs REST</span>
+                        <span class="subject-badge">Full Stack</span>
+                    </div>
+                    <a href="https://wa.me/573044435307?text=Hola,%20necesito%20una%20aplicación%20web" target="_blank" class="btn btn-success mt-3">Cotizar Desarrollo</a>
+                </div>
+
+                <!-- Automatizaciones -->
+                <div class="service-showcase-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="service-showcase-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3>Automatizaciones y Bots</h3>
+                    <p>Automatizamos procesos repetitivos, integramos sistemas y creamos bots para redes sociales, mensajería y gestión empresarial eficiente.</p>
+                    <div class="subjects-list">
+                        <span class="subject-badge">RPA</span>
+                        <span class="subject-badge">Webhooks</span>
+                        <span class="subject-badge">Zapier</span>
+                        <span class="subject-badge">Make.com</span>
+                        <span class="subject-badge">Bots Telegram</span>
+                        <span class="subject-badge">Integraciones</span>
+                    </div>
+                    <a href="https://wa.me/573044435307?text=Hola,%20necesito%20automatizar%20procesos" target="_blank" class="btn btn-success mt-3">Conversar sobre RPA</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer id="contacto" class="py-5 bg-dark">
+        <div class="container text-center">
+            <h2 class="mb-4">¿Necesitas Ayuda?</h2>
+            <p class="lead mb-4">Contáctanos y obtén soporte especializado en cualquiera de nuestros servicios.</p>
+            <a href="https://wa.me/573044435307?text=Hola,%20tengo%20dudas%20sobre%20los%20servicios" class="btn btn-success btn-lg mb-4">Hablar con un Asesor</a>
+            <div class="social-icons mt-4">
+                <a target="_blank" href="https://wa.me/573044435307" class="social-link" aria-label="Contacto por WhatsApp">
+                    <i class="fab fa-whatsapp me-2" style="color: #25D366;"></i> WhatsApp
+                </a>
+                <a target="_blank" href="http://bit.ly/easyclassig" class="social-link" aria-label="Perfil de Instagram">
+                    <i class="fab fa-instagram me-2" style="color: #E4405F;"></i> Instagram
+                </a>
+                <a target="_blank" href="https://www.facebook.com/Andres-Bueno-502366350132053" class="social-link" aria-label="Página de Facebook">
+                    <i class="fab fa-facebook me-2" style="color: #1877F2;"></i> Facebook
+                </a>
+                <a target="_blank" href="mailto:easyclass.1help@gmail.com" class="social-link" aria-label="Enviar correo electrónico">
+                    <i class="fas fa-envelope me-2" style="color: #D44638;"></i> Gmail
+                </a>
+                <a target="_blank" href="https://www.youtube.com/channel/UChtKjBiS0nCyyq_288JD31Q" class="social-link" aria-label="Canal de YouTube">
+                    <i class="fab fa-youtube me-2" style="color: #FF0000;"></i> YouTube
+                </a>
+            </div>
+            <p class="mt-4 text-muted"><small>&copy; 2025 EasyClass. Todos los derechos reservados.</small></p>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/573044435307?text=Hola,%20estoy%20interesado%20en%20sus%20servicios." class="whatsapp-flotante" target="_blank">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        const nav = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+    </script>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "EasyClass - Herramientas Académicas",
+      "description": "Herramientas de cálculo, servicios académicos y desarrollo tecnológico para potenciar el aprendizaje",
+      "provider": {
+        "@type": "EducationalOrganization",
+        "name": "EasyClass"
+      }
+    }
+    </script>
+
+</body>
+</html>

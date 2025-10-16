@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Sitemap: https://easyclass10.github.io/easyclass10/sitemap.xml
+
+# Directories to disallow
+Disallow: /admin/
+Disallow: /private/
+
+# Crawl-delay to prevent overwhelming the server
+Crawl-delay: 10

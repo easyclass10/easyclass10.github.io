@@ -1,0 +1,177 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap');
+
+:root {
+    --primary-green: #1DB954; /* Un verde más moderno tipo Spotify */
+    --secondary-red: #F44336;
+    --dark-bg: #121212;
+    --light-bg: #1e1e1e;
+    --text-color: #ffffff;
+    --text-muted: #b3b3b3;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--dark-bg);
+    color: var(--text-color);
+}
+
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50px;
+    margin: 0.5rem;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    color: white;
+}
+
+.social-link:hover {
+    background: var(--primary-green);
+    color: var(--dark-bg);
+    transform: translateY(-3px);
+}
+
+/* --- Navbar --- */
+.navbar {
+    transition: background-color 0.4s ease-in-out;
+}
+.navbar.scrolled {
+    background-color: rgba(18, 18, 18, 0.85);
+    backdrop-filter: blur(10px);
+}
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+.brand-green { color: var(--primary-green); }
+.brand-red { color: var(--secondary-red); }
+.nav-link {
+    transition: color 0.3s;
+}
+.nav-link:hover {
+    color: var(--primary-green);
+}
+
+/* --- Hero Section --- */
+.hero-section {
+    min-height: 100vh;
+    background: linear-gradient(rgba(18, 18, 18, 0.7), rgba(18, 18, 18, 0.9)), url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&q=85&fm=jpg&crop=entropy&cs=srgb&w=1920') no-repeat center center;
+    background-size: cover;
+}
+
+/* --- Botones --- */
+.btn-success {
+    background-color: var(--primary-green);
+    border: none;
+    font-weight: 700;
+    padding: 12px 30px;
+    border-radius: 50px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.btn-success:hover {
+    background-color: #1ed760;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(29, 185, 84, 0.4);
+}
+.btn-outline-light {
+    border-color: var(--primary-green);
+    color: var(--primary-green);
+    font-weight: 700;
+    padding: 12px 30px;
+    border-radius: 50px;
+}
+.btn-outline-light:hover {
+    background-color: var(--primary-green);
+    color: var(--dark-bg);
+}
+
+/* --- Tarjetas de Servicios --- */
+.service-card {
+    background-color: var(--light-bg);
+    padding: 2.5rem;
+    border-radius: 15px;
+    text-align: center;
+    border: 1px solid #282828;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%;
+}
+.service-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+.service-icon {
+    font-size: 2.5rem;
+    color: var(--primary-green);
+    margin-bottom: 1rem;
+}
+
+/* --- Sección Proceso --- */
+.process-step {
+    padding: 2rem;
+}
+.step-number {
+    width: 50px;
+    height: 50px;
+    background-color: var(--primary-green);
+    color: var(--dark-bg);
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    border: 3px solid var(--dark-bg);
+    box-shadow: 0 0 0 4px var(--primary-green);
+}
+
+/* --- Testimonios --- */
+.testimonial-card {
+    background-color: var(--light-bg);
+    padding: 2rem;
+    border-left: 5px solid var(--primary-green);
+    border-radius: 8px;
+}
+
+/* --- Footer --- */
+footer {
+    background-color: #000;
+}
+.social-icons .social-link {
+    color: var(--text-muted);
+    font-size: 1rem;
+    margin: 0.5rem;
+    transition: color 0.3s, transform 0.3s;
+}
+.social-icons .social-link:hover {
+    color: var(--primary-green);
+    transform: scale(1.2);
+}
+
+/* Estilos para el botón flotante de WhatsApp */
+.whatsapp-flotante {
+    position: fixed; /* Posición fija en la pantalla */
+    width: 60px; /* Ancho del botón */
+    height: 60px; /* Alto del botón */
+    bottom: 25px; /* Distancia desde la parte inferior */
+    right: 25px; /* Distancia desde la derecha */
+    background-color: #25D366; /* Color de fondo de WhatsApp */
+    color: #FFF; /* Color del ícono */
+    border-radius: 50px; /* Bordes redondeados para hacerlo circular */
+    text-align: center; /* Centrado del ícono */
+    font-size: 30px; /* Tamaño del ícono */
+    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4); /* Sombra para darle profundidad */
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+    display: flex; /* Flexbox para centrar el ícono perfectamente */
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s ease; /* Transición suave para el efecto hover */
+}
+
+/* Efecto al pasar el cursor por encima */
+.whatsapp-flotante:hover {
+    transform: scale(1.1); /* Agranda ligeramente el botón */
+    color: #FFF; /* Mantiene el color del ícono */
+}
