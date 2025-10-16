@@ -1,0 +1,1 @@
+# easyclass10.github.io
