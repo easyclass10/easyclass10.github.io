@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Rectas Vectoriales - EasyClass</title>
+    <meta name="description" content="Calcula ecuaciones paramétricas y simétricas de rectas en el espacio. Herramienta gratuita de EasyClass.">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap');
+
+        :root {
+            --primary-green: #1DB954;
+            --secondary-red: #F44336;
+            --dark-bg: #121212;
+            --light-bg: #1e1e1e;
+            --text-color: #ffffff;
+            --text-muted: #b3b3b3;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar */
+        .navbar {
+            transition: background-color 0.4s ease-in-out;
+        }
+        .navbar.scrolled {
+            background-color: rgba(18, 18, 18, 0.85);
+            backdrop-filter: blur(10px);
+        }
+        .navbar-dark {
+            background-color: rgba(18, 18, 18, 0.7);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        .brand-green { color: var(--primary-green); }
+        .brand-red { color: var(--secondary-red); }
+        .nav-link {
+            transition: color 0.3s;
+        }
+        .nav-link:hover {
+            color: var(--primary-green);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            margin-top: 60px;
+        }
+
+        /* Container */
+        .calculator-wrapper {
+            background-color: var(--light-bg);
+            padding: 3rem;
+            border-radius: 15px;
+            border: 1px solid #282828;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .calculator-title {
+            text-align: center;
+            margin-bottom: 0.2rem;
+            font-size: 2rem;
+            font-weight: 900;
+            color: var(--primary-green);
+        }
+
+        .formula-display {
+            background: rgba(29, 185, 84, 0.1);
+            border: 2px solid var(--primary-green);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Sections */
+        .input-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        /* Input Groups */
+        .input-group-wrapper {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-field label {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        .input-field input {
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(29, 185, 84, 0.3);
+            border-radius: 8px;
+            padding: 0.8rem;
+            color: var(--text-color);
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .input-field input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            background-color: rgba(29, 185, 84, 0.15);
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.2);
+        }
+
+        /* Button */
+        .btn-calculate {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary-green), #1ed760);
+            color: var(--dark-bg);
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn-calculate:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(29, 185, 84, 0.4);
+        }
+
+        .btn-calculate:active {
+            transform: scale(0.98);
+        }
+
+        /* Results Section */
+        .results-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid rgba(29, 185, 84, 0.3);
+        }
+
+        .results-title {
+            font-size: 1.3rem;
+            font-weight: 900;
+            color: var(--primary-green);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .result-box {
+            background: rgba(29, 185, 84, 0.08);
+            border-left: 4px solid var(--primary-green);
+            border-radius: 8px;
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .result-content {
+            font-size: 1.1rem;
+            color: var(--text-color);
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+            line-height: 1.6;
+        }
+
+        .result-box.hidden {
+            display: none;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #000;
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid #282828;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+        }
+
+        .social-link:hover {
+            background: var(--primary-green);
+            color: var(--dark-bg);
+            transform: translateY(-3px);
+        }
+
+        .whatsapp-flotante {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 25px;
+            right: 25px;
+            background-color: #25D366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+
+        .whatsapp-flotante:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-top: 70px;
+                padding: 1rem;
+            }
+
+            .calculator-wrapper {
+                padding: 1.5rem;
+            }
+
+            .calculator-title {
+                font-size: 1.5rem;
+            }
+
+            .input-group-wrapper {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .formula-display {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .input-group-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+        <link rel="stylesheet" href="../styles.css">
+    <script defer src="../nav_otros.js"></script>
+    <div id="navBarra"></div>
+
+    <!-- Navbar -->
+     <!--
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" aria-label="Menú de navegación">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html" aria-label="Volver a inicio">
+                <i class="fas fa-arrows-alt me-2" style="color: var(--primary-green);"></i>
+                <span class="brand-green">easy</span><span class="brand-red">class</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegación">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html#servicios">Servicios</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="herramientas.html">Herramientas</a></li>
+                    <li class="nav-item ms-lg-3">
+                        <a class="btn btn-success" href="https://wa.me/573044435307?text=Hola,%20quisiera%20más%20información%20sobre%20los%20servicios%20de%20EasyClass" target="_blank">Pedir Info</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>-->
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="calculator-wrapper" data-aos="zoom-in">
+            <h1 class="calculator-title">Calculadora de Rectas Vectoriales</h1>
+            <div class="d-flex justify-content-center mb-2">
+                <a href="javascript:history.back()" class="btn btn-back btn-success btn-lg px-3 py-2"><i class="fas fa-arrow-left"></i> Volver</a>
+            </div>
+            
+            <div class="formula-display">
+                (x,y,z) = P + t·V
+            </div>
+
+            <!-- Punto P -->
+            <div class="input-section">
+                <div class="section-title">
+                    <i class="fas fa-dot-circle"></i>
+                    Coordenadas del Punto P(px, py, pz)
+                </div>
+                <div class="input-group-wrapper">
+                    <div class="input-field">
+                        <label for="px">px</label>
+                        <input type="number" id="px" placeholder="0" step="0.1">
+                    </div>
+                    <div class="input-field">
+                        <label for="py">py</label>
+                        <input type="number" id="py" placeholder="0" step="0.1">
+                    </div>
+                    <div class="input-field">
+                        <label for="pz">pz</label>
+                        <input type="number" id="pz" placeholder="0" step="0.1">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vector Director V -->
+            <div class="input-section">
+                <div class="section-title">
+                    <i class="fas fa-arrow-right"></i>
+                    Vector Director V(vx, vy, vz)
+                </div>
+                <div class="input-group-wrapper">
+                    <div class="input-field">
+                        <label for="vx">vx</label>
+                        <input type="number" id="vx" placeholder="1" step="0.1">
+                    </div>
+                    <div class="input-field">
+                        <label for="vy">vy</label>
+                        <input type="number" id="vy" placeholder="1" step="0.1">
+                    </div>
+                    <div class="input-field">
+                        <label for="vz">vz</label>
+                        <input type="number" id="vz" placeholder="1" step="0.1">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-calculate" id="extraer">
+                <i class="fas fa-calculator me-2"></i>Calcular
+            </button>
+
+            <!-- Results Section -->
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <h2 class="results-title">Resultados</h2>
+
+                <div class="result-box">
+                    <div class="result-label">Ecuaciones Paramétricas</div>
+                    <div class="result-content">
+                        <div id="resultado1"></div>
+                        <div id="resultado2"></div>
+                        <div id="resultado3"></div>
+                        <div id="resultado4"></div>
+                    </div>
+                </div>
+
+                <div class="result-box">
+                    <div class="result-label">Ecuaciones Simétricas</div>
+                    <div class="result-content">
+                        <div id="resultado5"></div>
+                        <div id="resultado6"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+  <script defer src="../footer.js"></script>
+    <div id="footer"></div>
+    <!-- WhatsApp Flotante -->
+    <a href="https://wa.me/573044435307?text=Hola,%20estoy%20interesado%20en%20sus%20servicios." class="whatsapp-flotante" target="_blank">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        // Inicializar animaciones AOS
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        // Efecto de cambio de color en la barra de navegación al hacer scroll
+        const nav = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Función de cálculo
+        function calcularRecta() {
+            const px = parseFloat(document.getElementById("px").value) || 0;
+            const py = parseFloat(document.getElementById("py").value) || 0;
+            const pz = parseFloat(document.getElementById("pz").value) || 0;
+            const vx = parseFloat(document.getElementById("vx").value) || 1;
+            const vy = parseFloat(document.getElementById("vy").value) || 1;
+            const vz = parseFloat(document.getElementById("vz").value) || 1;
+
+            // Ecuaciones paramétricas
+            document.getElementById("resultado1").innerHTML = "<strong>Ecuaciones Paramétricas:</strong>";
+            document.getElementById("resultado2").innerHTML = "x = " + px + " + t·(" + vx + ")";
+            document.getElementById("resultado3").innerHTML = "y = " + py + " + t·(" + vy + ")";
+            document.getElementById("resultado4").innerHTML = "z = " + pz + " + t·(" + vz + ")";
+
+            // Ecuaciones simétricas
+            document.getElementById("resultado5").innerHTML = "<strong>Ecuaciones Simétricas:</strong>";
+            const simetricas = `(x - ${px})/${vx} = (y - ${py})/${vy} = (z - ${pz})/${vz}`;
+            document.getElementById("resultado6").innerHTML = simetricas;
+
+            // Mostrar resultados
+            document.getElementById("resultsSection").style.display = "block";
+        }
+
+        // Event listener
+        document.getElementById("extraer").addEventListener("click", calcularRecta);
+
+        // Enter key para calcular
+        document.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                calcularRecta();
+            }
+        });
+    </script>
+</body>
+</html>

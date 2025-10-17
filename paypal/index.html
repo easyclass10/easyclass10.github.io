@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Comisiones PayPal - EasyClass</title>
+    <meta name="description" content="Calcula cuánto enviar por PayPal para que el destinatario reciba el monto exacto. Herramienta gratuita de EasyClass.">
+    <link rel="icon" href="nk.png" type="image/x-icon">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap');
+
+        :root {
+            --primary-green: #1DB954;
+            --secondary-red: #F44336;
+            --dark-bg: #121212;
+            --light-bg: #1e1e1e;
+            --text-color: #ffffff;
+            --text-muted: #b3b3b3;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        /* --- Contenedor Principal --- */
+        .tool-container {
+            min-height: 100vh;
+            padding-top: 120px;
+            padding-bottom: 60px;
+            background: linear-gradient(135deg, #1e1e1e 0%, #121212 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tool-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .tool-title h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-green), #1ed760);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-title p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* --- Tarjeta de Conversión --- */
+        .conversion-card {
+            background-color: var(--light-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid #282828;
+            transition: all 0.3s ease;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .conversion-card:hover {
+            border-color: var(--primary-green);
+            box-shadow: 0 5px 20px rgba(29, 185, 84, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #282828;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            color: var(--primary-green);
+            margin-right: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* --- Input --- */
+        .input-group-custom {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group-custom label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        
+        .input-wrapper {
+            position: relative;
+        }
+        
+        .input-wrapper .currency-symbol {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 1rem;
+            pointer-events: none;
+        }
+
+        .input-group-custom input {
+            width: 100%;
+            padding: 12px 12px 12px 35px; /* Add padding for currency symbol */
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 2px solid #282828;
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .input-group-custom input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            background-color: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.2);
+        }
+
+        /* --- Botón Calcular --- */
+        .btn-calcular {
+            width: 100%;
+            padding: 12px;
+            font-weight: 700;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+            background-color: var(--primary-green);
+            border: none;
+        }
+
+        .btn-calcular:hover {
+            background-color: #1ed760;
+            transform: scale(1.02);
+        }
+
+        .btn-calcular:focus {
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.3);
+        }
+
+        /* --- Resultados --- */
+        .resultados {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background-color: rgba(29, 185, 84, 0.08);
+            border-left: 4px solid var(--primary-green);
+            border-radius: 8px;
+            display: none;
+        }
+
+        .resultados.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .resultado-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #282828;
+            font-size: 0.95rem;
+        }
+
+        .resultado-item:last-child {
+            border-bottom: none;
+        }
+
+        .resultado-label {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .resultado-valor {
+            color: var(--primary-green);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .nota-comision {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .tool-container {
+                padding-top: 80px;
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+            .tool-title h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <script defer src="../nav_otros.js"></script>
+    <div id="navBarra"></div>
+
+    <div class="tool-container">
+        <div class="container d-flex flex-column align-items-center">
+            <div class="tool-title mb-2" data-aos="fade-down">
+                <h1>Calculadora de Comisiones PayPal</h1>
+                <p>Descubre cuánto enviar para que llegue el monto exacto.</p>
+                <a href="javascript:history.back()" class="btn btn-back btn-success btn-lg px-3 py-2"><i class="fas fa-arrow-left"></i> Volver</a>
+            </div>
+
+            <div class="conversion-card" data-aos="fade-up">
+                <div class="card-header">
+                    <div class="card-icon"><i class="fa-brands fa-paypal"></i></div>
+                    <h3 class="card-title">Calcular Envío</h3>
+                </div>
+                
+                <div class="input-group-custom">
+                    <label for="montoRecibir">Monto exacto que debe recibir (USD)</label>
+                    <div class="input-wrapper">
+                         <span class="currency-symbol">$</span>
+                         <input type="number" id="montoRecibir" placeholder="100.00" step="any">
+                    </div>
+                </div>
+                
+                <button type="button" id="btnCalcular" class="btn btn-success btn-calcular">
+                    <i class="fas fa-calculator me-2"></i> Calcular
+                </button>
+                
+                <div class="resultados" id="resultados-paypal">
+                    <div class="resultado-item">
+                        <span class="resultado-label">Debes enviar</span>
+                        <span class="resultado-valor" id="resultadoEnviar">-</span>
+                    </div>
+                    <div class="resultado-item">
+                        <span class="resultado-label">Comisión pagada</span>
+                        <span class="resultado-valor" id="resultadoComision">-</span>
+                    </div>
+                    <div class="resultado-item">
+                        <span class="resultado-label">Porcentaje de comisión</span>
+                        <span class="resultado-valor" id="resultadoPorcentaje">-</span>
+                    </div>
+                </div>
+                 <p class="nota-comision">
+                    Cálculo basado en la tarifa estándar para pagos internacionales: 5.4% + $0.30 USD.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+    <script>
+        // Inicializar AOS
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        // Función para formatear números a 2 decimales
+        function formatNumber(num) {
+            return parseFloat(num).toFixed(2);
+        }
+        
+        // Función principal para calcular la comisión
+        function calcularComisionPayPal() {
+            const montoRecibirInput = document.getElementById("montoRecibir");
+            const montoRecibir = parseFloat(montoRecibirInput.value);
+
+            if (isNaN(montoRecibir) || montoRecibir <= 0) {
+                alert("Por favor, ingresa un valor numérico válido y positivo.");
+                return;
+            }
+            
+            // Tarifas estándar de PayPal (pueden variar)
+            const comisionPorcentaje = 0.054; // 5.4%
+            const comisionFija = 0.30;       // $0.30 USD
+
+            // Fórmula para calcular el monto a enviar (cálculo inverso)
+            // Monto a Enviar = (Monto a Recibir + Comisión Fija) / (1 - Comisión Porcentual)
+            const montoAEnviar = (montoRecibir + comisionFija) / (1 - comisionPorcentaje);
+            const comisionTotal = montoAEnviar - montoRecibir;
+            const porcentajeReal = (comisionTotal / montoAEnviar) * 100;
+
+            // Mostrar resultados
+            document.getElementById("resultadoEnviar").textContent = `$${formatNumber(montoAEnviar)}`;
+            document.getElementById("resultadoComision").textContent = `$${formatNumber(comisionTotal)}`;
+            document.getElementById("resultadoPorcentaje").textContent = `${formatNumber(porcentajeReal)}%`;
+            
+            // Hacer visible el contenedor de resultados
+            document.getElementById("resultados-paypal").classList.add("show");
+        }
+
+        // Event listener para el botón
+        document.getElementById("btnCalcular").addEventListener("click", calcularComisionPayPal);
+
+        // Permitir que la tecla "Enter" active el cálculo
+        document.getElementById("montoRecibir").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Evita que el formulario se envíe si lo hubiera
+                calcularComisionPayPal();
+            }
+        });
+    </script>
+</body>
+</html>

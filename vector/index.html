@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyClass - Calculadora de Vectores</title>
+    <meta name="description" content="Calculadora de operaciones con vectores. Calcula producto punto, producto cruz, magnitudes y proyecciones vectoriales.">
+    <link rel="icon" href="nk.png" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap');
+
+        :root {
+            --primary-green: #1DB954;
+            --secondary-red: #F44336;
+            --dark-bg: #121212;
+            --light-bg: #1e1e1e;
+            --text-color: #ffffff;
+            --text-muted: #b3b3b3;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            padding-top: 80px;
+        }
+
+        /* Navbar */
+        .navbar {
+            transition: background-color 0.4s ease-in-out;
+            background-color: rgba(18, 18, 18, 0.95);
+        }
+        .navbar.scrolled {
+            background-color: rgba(18, 18, 18, 0.98);
+            backdrop-filter: blur(10px);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        .brand-green { color: var(--primary-green); }
+        .brand-red { color: var(--secondary-red); }
+        .nav-link {
+            transition: color 0.3s;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-green);
+        }
+
+        /* Hero Section */
+        .hero-section {
+            padding: 60px 0 40px;
+            background: linear-gradient(135deg, rgba(29, 185, 84, 0.1), rgba(18, 18, 18, 0.9));
+            border-radius: 20px;
+            margin-bottom: 40px;
+        }
+
+        /* Cards */
+        .calculator-card {
+            background-color: var(--light-bg);
+            padding: 2.5rem;
+            border-radius: 15px;
+            border: 1px solid #282828;
+            margin-bottom: 2rem;
+        }
+
+        .result-card {
+            background-color: var(--light-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 5px solid var(--primary-green);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        .result-card:hover {
+            transform: translateX(10px);
+        }
+
+        /* Input Fields */
+        .form-control {
+            background-color: #2a2a2a;
+            border: 2px solid #3a3a3a;
+            color: var(--text-color);
+            border-radius: 10px;
+            padding: 12px;
+            transition: border-color 0.3s;
+        }
+        .form-control:focus {
+            background-color: #2a2a2a;
+            border-color: var(--primary-green);
+            color: var(--text-color);
+            box-shadow: 0 0 0 0.2rem rgba(29, 185, 84, 0.25);
+        }
+        .form-label {
+            color: var(--primary-green);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Buttons */
+        .btn-success {
+            background-color: var(--primary-green);
+            border: none;
+            font-weight: 700;
+            padding: 15px 40px;
+            border-radius: 50px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-success:hover {
+            background-color: #1ed760;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(29, 185, 84, 0.4);
+        }
+
+        /* Vector Icon */
+        .vector-icon {
+            font-size: 3rem;
+            color: var(--primary-green);
+            margin-bottom: 1rem;
+        }
+
+        /* Result Sections */
+        .result-value {
+            color: var(--primary-green);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin: 5px;
+        }
+        .badge-ortogonal {
+            background-color: rgba(29, 185, 84, 0.2);
+            color: var(--primary-green);
+            border: 2px solid var(--primary-green);
+        }
+        .badge-paralelo {
+            background-color: rgba(244, 67, 54, 0.2);
+            color: var(--secondary-red);
+            border: 2px solid var(--secondary-red);
+        }
+
+        /* Footer */
+        footer {
+            background-color: #000;
+            margin-top: 60px;
+        }
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+        }
+        .social-link:hover {
+            background: var(--primary-green);
+            color: var(--dark-bg);
+            transform: translateY(-3px);
+        }
+
+        /* WhatsApp Float Button */
+        .whatsapp-flotante {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 25px;
+            right: 25px;
+            background-color: #25D366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+        .whatsapp-flotante:hover {
+            transform: scale(1.1);
+            color: #FFF;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .logo-img {
+            max-width: 150px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <script defer src="../nav_otros.js"></script>
+    <div id="navBarra"></div>
+
+    <!-- Navbar
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" aria-label="Menú de navegación principal">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html" aria-label="Página de inicio de EasyClass">
+                <img src="nk.png" alt="Logo de EasyClass" width="40" height="40" class="me-2">
+                <span class="brand-green">easy</span><span class="brand-red">class</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegación">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="herramientas.html">Herramientas</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="#">Calculadora Vectores</a></li>
+                    <li class="nav-item ms-lg-3">
+                        <a class="btn btn-success" href="https://wa.me/573044435307?text=Hola,%20necesito%20ayuda%20con%20vectores" target="_blank">Obtener Ayuda</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav> -->
+
+    <!-- Hero Section -->
+    <div class="container">
+        <div class="hero-section text-center" data-aos="fade-down">
+            <h1 class="display-5 fw-bold mb-3">Calculadora de Vectores</h1>
+            <p class="lead">Realiza operaciones con vectores de forma rápida y precisa 📐</p>
+            <a href="javascript:history.back()" class="mb-2 btn btn-back btn-success btn-lg px-3 py-2"><i class="fas fa-arrow-left"></i> Volver</a>
+        </div>
+
+        <!-- Input Section -->
+        <div class="row">
+            <div class="col-md-6" data-aos="fade-right">
+                <div class="calculator-card">
+                    <h3 class="mb-4"><i class="fas fa-vector-square vector-icon"></i> Vector U</h3>
+                    <div class="mb-3">
+                        <label for="ux" class="form-label">Componente X (ux):</label>
+                        <input type="number" class="form-control" id="ux" placeholder="Ingresa ux">
+                    </div>
+                    <div class="mb-3">
+                        <label for="uy" class="form-label">Componente Y (uy):</label>
+                        <input type="number" class="form-control" id="uy" placeholder="Ingresa uy">
+                    </div>
+                    <div class="mb-3">
+                        <label for="uz" class="form-label">Componente Z (uz):</label>
+                        <input type="number" class="form-control" id="uz" placeholder="Ingresa uz">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6" data-aos="fade-left">
+                <div class="calculator-card">
+                    <h3 class="mb-4"><i class="fas fa-vector-square vector-icon"></i> Vector V</h3>
+                    <div class="mb-3">
+                        <label for="vx" class="form-label">Componente X (vx):</label>
+                        <input type="number" class="form-control" id="vx" placeholder="Ingresa vx">
+                    </div>
+                    <div class="mb-3">
+                        <label for="vy" class="form-label">Componente Y (vy):</label>
+                        <input type="number" class="form-control" id="vy" placeholder="Ingresa vy">
+                    </div>
+                    <div class="mb-3">
+                        <label for="vz" class="form-label">Componente Z (vz):</label>
+                        <input type="number" class="form-control" id="vz" placeholder="Ingresa vz">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Calculate Button -->
+        <div class="text-center mb-4" data-aos="zoom-in">
+            <button class="btn btn-success btn-lg" id="extraer">
+                <i class="fas fa-calculator me-2"></i> Calcular Operaciones
+            </button>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultados" class="hidden">
+            <!-- Producto Punto -->
+            <div class="result-card" data-aos="fade-up">
+                <h4><i class="fas fa-circle-dot me-2"></i> Producto Punto (U · V)</h4>
+                <p class="result-value" id="resultado"></p>
+            </div>
+
+            <!-- Magnitudes -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="result-card" data-aos="fade-up" data-aos-delay="100">
+                        <h5><i class="fas fa-ruler me-2"></i> Magnitud del Vector U</h5>
+                        <p class="result-value" id="mmu"></p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="result-card" data-aos="fade-up" data-aos-delay="150">
+                        <h5><i class="fas fa-ruler me-2"></i> Magnitud del Vector V</h5>
+                        <p class="result-value" id="mmv"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Producto Cruz -->
+            <div class="result-card" data-aos="fade-up" data-aos-delay="200">
+                <h4><i class="fas fa-times me-2"></i> Producto Cruz (W = U × V)</h4>
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <p class="result-value" id="ccx"></p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="result-value" id="ccy"></p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="result-value" id="ccz"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Proyección -->
+            <div class="result-card" data-aos="fade-up" data-aos-delay="250">
+                <h4><i class="fas fa-project-diagram me-2"></i> Proyección de U sobre V (P = Proy<sub>V</sub>(U))</h4>
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <p class="result-value" id="ppx"></p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="result-value" id="ppy"></p>
+                    </div>
+                    <div class="col-md-4">
+                        <p class="result-value" id="ppz"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estado de los vectores -->
+            <div class="result-card text-center" data-aos="fade-up" data-aos-delay="300">
+                <h4 class="mb-3"><i class="fas fa-info-circle me-2"></i> Relación entre Vectores</h4>
+                <div id="orto"></div>
+                <div id="para"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+  <script defer src="../footer.js"></script>
+    <div id="footer"></div>
+    <!-- WhatsApp Float Button -->
+    <a href="https://wa.me/573044435307?text=Hola,%20necesito%20ayuda%20con%20vectores" class="whatsapp-flotante" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        // Inicializar animaciones
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        // Efecto scroll navbar
+        const nav = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Lógica de la calculadora
+        function calcularVectores() {
+            const ux = parseFloat(document.getElementById("ux").value) || 0;
+            const uy = parseFloat(document.getElementById("uy").value) || 0;
+            const uz = parseFloat(document.getElementById("uz").value) || 0;
+            const vx = parseFloat(document.getElementById("vx").value) || 0;
+            const vy = parseFloat(document.getElementById("vy").value) || 0;
+            const vz = parseFloat(document.getElementById("vz").value) || 0;
+
+            // Producto Cruz
+            const cx = uy * vz - uz * vy;
+            const cy = -ux * vz + uz * vx;
+            const cz = ux * vy - uy * vx;
+
+            // Producto Punto
+            const punto = ux * vx + uy * vy + uz * vz;
+
+            // Proyección
+            const denominador = vx**2 + vy**2 + vz**2;
+            const px = denominador !== 0 ? ((punto) / denominador) * vx : 0;
+            const py = denominador !== 0 ? ((punto) / denominador) * vy : 0;
+            const pz = denominador !== 0 ? ((punto) / denominador) * vz : 0;
+
+            // Magnitudes
+            const mu = Math.sqrt(ux**2 + uy**2 + uz**2);
+            const mv = Math.sqrt(vx**2 + vy**2 + vz**2);
+
+            // Verificar si es cruz cero
+            const cruz = cx**2 + cy**2 + cz**2;
+
+            // Mostrar resultados
+            document.getElementById("resultado").innerHTML = `U · V = ${punto.toFixed(4)}`;
+            document.getElementById("ccx").innerHTML = `Wx = ${cx.toFixed(4)}`;
+            document.getElementById("ccy").innerHTML = `Wy = ${cy.toFixed(4)}`;
+            document.getElementById("ccz").innerHTML = `Wz = ${cz.toFixed(4)}`;
+
+            document.getElementById("ppx").innerHTML = `Px = ${px.toFixed(4)}`;
+            document.getElementById("ppy").innerHTML = `Py = ${py.toFixed(4)}`;
+            document.getElementById("ppz").innerHTML = `Pz = ${pz.toFixed(4)}`;
+
+            document.getElementById("mmu").innerHTML = `|U| = ${mu.toFixed(4)}`;
+            document.getElementById("mmv").innerHTML = `|V| = ${mv.toFixed(4)}`;
+
+            // Estado de vectores
+            const ortoDiv = document.getElementById("orto");
+            const paraDiv = document.getElementById("para");
+
+            if (punto === 0) {
+                ortoDiv.innerHTML = '<span class="status-badge badge-ortogonal"><i class="fas fa-check me-2"></i>Los vectores SON ortogonales (perpendiculares)</span>';
+            } else {
+                ortoDiv.innerHTML = '<span class="status-badge"><i class="fas fa-times me-2"></i>Los vectores NO son ortogonales</span>';
+            }
+
+            if (cruz === 0) {
+                paraDiv.innerHTML = '<span class="status-badge badge-paralelo"><i class="fas fa-check me-2"></i>Los vectores SON paralelos</span>';
+            } else {
+                paraDiv.innerHTML = '<span class="status-badge"><i class="fas fa-times me-2"></i>Los vectores NO son paralelos</span>';
+            }
+
+            // Mostrar sección de resultados
+            document.getElementById("resultados").classList.remove("hidden");
+            
+            // Scroll suave a resultados
+            document.getElementById("resultados").scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Event listener
+        document.getElementById("extraer").addEventListener("click", calcularVectores);
+
+        // Enter key para calcular
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    calcularVectores();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

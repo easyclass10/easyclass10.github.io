@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecuación del Plano - EasyClass</title>
+    <meta name="description" content="Calcula la ecuación del plano en 3D. Herramienta académica de geometría analítica de EasyClass.">
+    <link rel="icon" href="nk.png" type="image/x-icon">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap');
+
+        :root {
+            --primary-green: #1DB954;
+            --secondary-red: #F44336;
+            --dark-bg: #121212;
+            --light-bg: #1e1e1e;
+            --text-color: #ffffff;
+            --text-muted: #b3b3b3;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        /* --- Navbar --- */
+        .navbar {
+            transition: background-color 0.4s ease-in-out;
+        }
+        .navbar.scrolled {
+            background-color: rgba(18, 18, 18, 0.85);
+            backdrop-filter: blur(10px);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        .brand-green { color: var(--primary-green); }
+        .brand-red { color: var(--secondary-red); }
+        .nav-link {
+            transition: color 0.3s;
+        }
+        .nav-link:hover {
+            color: var(--primary-green);
+        }
+
+        /* --- Botones --- */
+        .btn-success {
+            background-color: var(--primary-green);
+            border: none;
+            font-weight: 700;
+            padding: 12px 30px;
+            border-radius: 50px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-success:hover {
+            background-color: #1ed760;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(29, 185, 84, 0.4);
+        }
+
+        /* --- Contenedor Principal --- */
+        .tool-container {
+            min-height: calc(100vh - 80px);
+            padding-top: 120px;
+            padding-bottom: 60px;
+            background: linear-gradient(135deg, #1e1e1e 0%, #121212 100%);
+        }
+
+        .tool-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .tool-title h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-green), #1ed760);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-title p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* --- Card Principal --- */
+        .tool-card {
+            background-color: var(--light-bg);
+            padding: 3rem;
+            border-radius: 20px;
+            border: 1px solid #282828;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* --- Tarjetas de Secciones --- */
+        .section-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #282828;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .section-card:hover {
+            border-color: var(--primary-green);
+            background-color: rgba(29, 185, 84, 0.05);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-green);
+        }
+
+        .section-title i {
+            margin-right: 0.8rem;
+            font-size: 1.5rem;
+        }
+
+        /* --- Input Group --- */
+        .input-group-custom {
+            margin-bottom: 1rem;
+        }
+
+        .input-group-custom label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.8rem;
+        }
+
+        .input-row div {
+            width: 100%;
+        }
+
+        .input-group-custom input {
+            width: 100%;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 2px solid #282828;
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .input-group-custom input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            background-color: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.2);
+        }
+
+        .coordinate-label {
+            font-weight: 700;
+            color: var(--primary-green);
+            font-size: 0.85rem;
+        }
+
+        /* --- Botón Calcular --- */
+        .btn-calcular {
+            width: 100%;
+            padding: 14px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
+        }
+
+        /* --- Fórmula --- */
+        .formula-box {
+            background-color: rgba(29, 185, 84, 0.1);
+            border-left: 4px solid var(--primary-green);
+            padding: 1.2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+        }
+
+        .formula-title {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .formula-text {
+            color: var(--primary-green);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* --- Resultado --- */
+        .resultado-container {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, rgba(29, 185, 84, 0.15), rgba(29, 185, 84, 0.05));
+            border-left: 5px solid var(--primary-green);
+            border-radius: 8px;
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .resultado-container.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .resultado-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .resultado-valor {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary-green);
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 0.5rem;
+        }
+
+        /* --- Social Links --- */
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            margin: 0.3rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .social-link:hover {
+            background: var(--primary-green);
+            color: var(--dark-bg);
+            transform: translateY(-3px);
+        }
+
+        /* --- Footer --- */
+        footer {
+            background-color: #000;
+            border-top: 1px solid #282828;
+        }
+
+        /* --- WhatsApp Flotante --- */
+        .whatsapp-flotante {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 25px;
+            right: 25px;
+            background-color: #25D366;
+            color: #FFF;
+            border-radius: 50px;
+            font-size: 30px;
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s ease;
+            text-decoration: none;
+        }
+
+        .whatsapp-flotante:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 768px) {
+            .tool-container {
+                padding-top: 100px;
+            }
+
+            .tool-card {
+                padding: 1.5rem;
+                margin: 0 1rem;
+            }
+
+            .tool-title h1 {
+                font-size: 1.8rem;
+            }
+
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+
+            .resultado-valor {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+        <link rel="stylesheet" href="../styles.css">
+    <script defer src="../nav_otros.js"></script>
+    <div id="navBarra"></div>
+
+    <!-- Navbar -->
+     <!--
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: rgba(18, 18, 18, 0.95); backdrop-filter: blur(10px);" aria-label="Menú de navegación">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html" aria-label="Volver a página de inicio">
+                <img src="nk.png" alt="Logo de EasyClass" width="40" height="40" class="me-2">
+                <span class="brand-green">easy</span><span class="brand-red">class</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegación">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html#servicios">Servicios</a></li>
+                    <li class="nav-item"><a class="nav-link" href="herramientas.html">Herramientas</a></li>
+                    <li class="nav-item ms-lg-3">
+                        <a class="btn btn-success" href="https://wa.me/573044435307?text=Hola,%20quisiera%20más%20información%20sobre%20los%20servicios%20de%20EasyClass" target="_blank">Pedir Info</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>-->
+
+    <!-- Contenedor Principal -->
+    <div class="tool-container">
+        <div class="container">
+            <div class="tool-title" data-aos="fade-down">
+                <h1>Ecuación del Plano</h1>
+                <p>Calcula la ecuación de un plano en el espacio 3D</p>
+                <a href="javascript:history.back()" class="btn btn-back btn-success btn-lg px-3 py-2"><i class="fas fa-arrow-left"></i> Volver</a>
+            </div>
+
+            <div class="tool-card" data-aos="fade-up">
+                <!-- Fórmula -->
+                <div class="formula-box">
+                    <div class="formula-title">Fórmula General del Plano</div>
+                    <div class="formula-text">n · (r - P) = 0</div>
+                    <div class="formula-title" style="margin-top: 0.8rem; font-size: 0.8rem;">
+                        Donde n es el vector normal y P es un punto del plano
+                    </div>
+                </div>
+
+                <!-- Sección Punto P -->
+                <div class="section-card">
+                    <div class="section-title">
+                        <i class="fas fa-cube"></i>
+                        Punto P(px, py, pz) en el Plano
+                    </div>
+                    <div class="input-row">
+                        <div>
+                            <label for="px">
+                                <span class="coordinate-label">px</span>
+                            </label>
+                            <input type="number" id="px" placeholder="0" step="any">
+                        </div>
+                        <div>
+                            <label for="py">
+                                <span class="coordinate-label">py</span>
+                            </label>
+                            <input type="number" id="py" placeholder="0" step="any">
+                        </div>
+                        <div>
+                            <label for="pz">
+                                <span class="coordinate-label">pz</span>
+                            </label>
+                            <input type="number" id="pz" placeholder="0" step="any">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección Vector Normal -->
+                <div class="section-card">
+                    <div class="section-title">
+                        <i class="fas fa-arrow-up"></i>
+                        Vector Normal n(nx, ny, nz)
+                    </div>
+                    <div class="input-row">
+                        <div>
+                            <label for="vx">
+                                <span class="coordinate-label">nx</span>
+                            </label>
+                            <input type="number" id="vx" placeholder="1" step="any">
+                        </div>
+                        <div>
+                            <label for="vy">
+                                <span class="coordinate-label">ny</span>
+                            </label>
+                            <input type="number" id="vy" placeholder="0" step="any">
+                        </div>
+                        <div>
+                            <label for="vz">
+                                <span class="coordinate-label">nz</span>
+                            </label>
+                            <input type="number" id="vz" placeholder="0" step="any">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botón Calcular -->
+                <button type="button" id="extraer" class="btn btn-success btn-calcular">
+                    <i class="fas fa-calculator me-2"></i> Calcular Ecuación del Plano
+                </button>
+
+                <!-- Resultado -->
+                <div class="resultado-container" id="resultado-container">
+                    <div class="resultado-label">Ecuación del Plano</div>
+                    <div class="resultado-valor" id="resultado1">-</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+  <script defer src="../footer.js"></script>
+    <div id="footer"></div>
+
+    <!-- WhatsApp Flotante -->
+    <a href="https://wa.me/573044435307?text=Hola,%20estoy%20interesado%20en%20sus%20servicios." class="whatsapp-flotante" target="_blank" aria-label="Contactar por WhatsApp">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+    <script>
+        // Inicializar AOS
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        // Scroll effect en navbar
+        const nav = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Función para calcular la ecuación del plano
+        function entregarDinero() {
+            const px = document.getElementById("px");
+            const py = document.getElementById("py");
+            const pz = document.getElementById("pz");
+            const vx = document.getElementById("vx");
+            const vy = document.getElementById("vy");
+            const vz = document.getElementById("vz");
+
+            // Validación
+            if (!px.value || !py.value || !pz.value || !vx.value || !vy.value || !vz.value) {
+                alert("Por favor, completa todos los campos");
+                return;
+            }
+
+            // Cálculo: n · (P) = nx*px + ny*py + nz*pz
+            const punto = parseFloat(px.value) * parseFloat(vx.value) + 
+                         parseFloat(py.value) * parseFloat(vy.value) + 
+                         parseFloat(pz.value) * parseFloat(vz.value);
+
+            // Formatear la ecuación
+            const nx = parseFloat(vx.value);
+            const ny = parseFloat(vy.value);
+            const nz = parseFloat(vz.value);
+            const d = punto;
+
+            let ecuacion = "";
+            if (nx !== 0) ecuacion += `${nx}x`;
+            if (ny !== 0) ecuacion += (ny > 0 && nx !== 0 ? "+" : "") + (ny === 0 ? "" : `${ny}y`);
+            if (nz !== 0) ecuacion += (nz > 0 && (nx !== 0 || ny !== 0) ? "+" : "") + (nz === 0 ? "" : `${nz}z`);
+
+            const resultado = document.getElementById("resultado1");
+            const resultadoContainer = document.getElementById("resultado-container");
+            
+            resultado.innerHTML = `${ecuacion} = ${d}`;
+            resultadoContainer.classList.add("show");
+        }
+
+        // Event listeners
+        document.getElementById("extraer").addEventListener("click", entregarDinero);
+
+        // Permitir Enter para calcular
+        ["px", "py", "pz", "vx", "vy", "vz"].forEach(id => {
+            document.getElementById(id).addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    entregarDinero();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

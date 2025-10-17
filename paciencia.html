@@ -96,41 +96,27 @@
             color: var(--secondary-red);
         }
     </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark" aria-label="Menú de navegación principal">
-        <div class="container">
-            <a class="navbar-brand d-flex align-items-center" href="#" aria-label="Página de inicio de EasyClass">
-                <img src="../nk.png" alt="Logo de EasyClass" height="40" width="40">
-                <span class="brand-green ms-2">easy</span><span class="brand-red">class</span>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegación">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="cursos.html">Cursos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#instructores">Instructores</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    <script defer src="nav.js"></script>
+    <div id="navBarra"></div>
 
     <hr>
     <div class="construction-message">
         <h1>¡Estamos trabajando en ello!</h1>
         <p>Nuestro sitio está en construcción. Pronto tendremos contenido increíble para ti. Mientras tanto, puedes contactarnos en <a href="mailto:easyclass.1help@gmail.com">easyclass.1help@gmail.com</a>.</p>
         <p>Gracias por tu paciencia. 😊</p>
+        <style>
+            .colorV{
+                color: aliceblue !important;
+            }
+        </style>
+        <a href="javascript:history.back()" class="colorV btn btn-back btn-success btn-lg px-5 py-3">
+            <i class="fas fa-arrow-left me-2"></i> Volver
+        </a>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
 </body>

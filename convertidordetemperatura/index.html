@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de Temperaturas - EasyClass</title>
+    <meta name="description" content="Convierte temperaturas entre Celsius, Fahrenheit, Kelvin y Rankine. Herramienta académica gratuita de EasyClass.">
+    <link rel="icon" href="nk.png" type="image/x-icon">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap');
+
+        :root {
+            --primary-green: #1DB954;
+            --secondary-red: #F44336;
+            --dark-bg: #121212;
+            --light-bg: #1e1e1e;
+            --text-color: #ffffff;
+            --text-muted: #b3b3b3;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        /* --- Navbar --- */
+        .navbar {
+            transition: background-color 0.4s ease-in-out;
+        }
+        .navbar.scrolled {
+            background-color: rgba(18, 18, 18, 0.85);
+            backdrop-filter: blur(10px);
+        }
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+        .brand-green { color: var(--primary-green); }
+        .brand-red { color: var(--secondary-red); }
+        .nav-link {
+            transition: color 0.3s;
+        }
+        .nav-link:hover {
+            color: var(--primary-green);
+        }
+
+        /* --- Botones --- */
+        .btn-success {
+            background-color: var(--primary-green);
+            border: none;
+            font-weight: 700;
+            padding: 12px 30px;
+            border-radius: 50px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .btn-success:hover {
+            background-color: #1ed760;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(29, 185, 84, 0.4);
+        }
+
+        /* --- Contenedor Principal --- */
+        .tool-container {
+            min-height: calc(100vh - 80px);
+            padding-top: 120px;
+            padding-bottom: 60px;
+            background: linear-gradient(135deg, #1e1e1e 0%, #121212 100%);
+        }
+
+        .tool-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .tool-title h1 {
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--primary-green), #1ed760);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-title p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* --- Tarjetas de Conversión --- */
+        .conversion-card {
+            background-color: var(--light-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 1px solid #282828;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .conversion-card:hover {
+            border-color: var(--primary-green);
+            box-shadow: 0 5px 20px rgba(29, 185, 84, 0.15);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #282828;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            color: var(--primary-green);
+            margin-right: 1rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        /* --- Input --- */
+        .input-group-custom {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group-custom label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .input-group-custom input {
+            width: 100%;
+            padding: 12px;
+            background-color: rgba(0, 0, 0, 0.3);
+            border: 2px solid #282828;
+            border-radius: 8px;
+            color: var(--text-color);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .input-group-custom input:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            background-color: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.2);
+        }
+
+        /* --- Botón Convertir --- */
+        .btn-convertir {
+            width: 100%;
+            padding: 12px;
+            font-weight: 700;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-convertir:focus {
+            box-shadow: 0 0 10px rgba(29, 185, 84, 0.3);
+        }
+
+        /* --- Resultados --- */
+        .resultados {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background-color: rgba(29, 185, 84, 0.08);
+            border-left: 4px solid var(--primary-green);
+            border-radius: 8px;
+            display: none;
+        }
+
+        .resultados.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .resultado-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #282828;
+            font-size: 0.95rem;
+        }
+
+        .resultado-item:last-child {
+            border-bottom: none;
+        }
+
+        .resultado-label {
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .resultado-valor {
+            color: var(--primary-green);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        /* --- Grid de Tarjetas --- */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        /* --- Social Links --- */
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            margin: 0.3rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .social-link:hover {
+            background: var(--primary-green);
+            color: var(--dark-bg);
+            transform: translateY(-3px);
+        }
+
+        /* --- Footer --- */
+        footer {
+            background-color: #000;
+            border-top: 1px solid #282828;
+        }
+
+        /* --- WhatsApp Flotante --- */
+        .whatsapp-flotante {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 25px;
+            right: 25px;
+            background-color: #25D366;
+            color: #FFF;
+            border-radius: 50px;
+            font-size: 30px;
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s ease;
+            text-decoration: none;
+        }
+
+        .whatsapp-flotante:hover {
+            transform: scale(1.1);
+            color: #FFF;
+        }
+
+        @media (max-width: 768px) {
+            .tool-container {
+                padding-top: 100px;
+            }
+
+            .tool-title h1 {
+                font-size: 1.8rem;
+            }
+
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .resultado-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+        <link rel="stylesheet" href="../styles.css">
+    <script defer src="../nav_otros.js"></script>
+    <div id="navBarra"></div>
+
+    <!-- Navbar -->
+    <!--<nav class="navbar navbar-expand-lg navbar-dark fixed-top" style="background-color: rgba(18, 18, 18, 0.95); backdrop-filter: blur(10px);" aria-label="Menú de navegación">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html" aria-label="Volver a página de inicio">
+                <img src="nk.png" alt="Logo de EasyClass" width="40" height="40" class="me-2">
+                <span class="brand-green">easy</span><span class="brand-red">class</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Alternar navegación">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html#servicios">Servicios</a></li>
+                    <li class="nav-item"><a class="nav-link" href="herramientas.html">Herramientas</a></li>
+                    <li class="nav-item ms-lg-3">
+                        <a class="btn btn-success" href="https://wa.me/573044435307?text=Hola,%20quisiera%20más%20información%20sobre%20los%20servicios%20de%20EasyClass" target="_blank">Pedir Info</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>-->
+
+    <!-- Contenedor Principal -->
+    <div class="tool-container">
+        <div class="container">
+            <div class="tool-title" data-aos="fade-down">
+                <h1>Conversor de Temperaturas</h1>
+                <p>Convierte entre Celsius, Fahrenheit, Kelvin y Rankine</p>
+                <a href="javascript:history.back()" class="mb-2 btn btn-back btn-success btn-lg px-3 py-2"><i class="fas fa-arrow-left"></i> Volver</a>
+            </div>
+
+            <!-- Grid de Tarjetas -->
+            <div class="cards-grid">
+                <!-- Tarjeta Celsius -->
+                <div class="conversion-card" data-aos="fade-up" data-aos-delay="0">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-thermometer"></i></div>
+                        <h3 class="card-title">Desde Celsius</h3>
+                    </div>
+                    
+                    <div class="input-group-custom">
+                        <label for="T1">Ingresa temperatura en °C</label>
+                        <input type="number" id="T1" placeholder="0" step="any">
+                    </div>
+                    
+                    <button type="button" id="extraer1" class="btn btn-success btn-convertir">
+                        <i class="fas fa-arrow-right me-2"></i> Convertir
+                    </button>
+                    
+                    <div class="resultados" id="resultados-c">
+                        <div class="resultado-item">
+                            <span class="resultado-label">°C (Celsius)</span>
+                            <span class="resultado-valor" id="resultadoc1">-</span>
+                        </div>
+                        <div class="resultado-item">
+                            <span class="resultado-label">°F (Fahrenheit)</span>
+                            <span class="resultado-valor" id="resultadoc2">-</span>
+                        </div>
+                        <div class="resultado-item">
+                            <span class="resultado-label">K (Kelvin)</span>
+                            <span class="resultado-valor" id="resultadoc3">-</span>
+                        </div>
+                        <div class="resultado-item">
+                            <span class="resultado-label">°R (Rankine)</span>
+                            <span class="resultado-valor" id="resultadoc4">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta Fahrenheit -->
+                <div class="conversion-card" data-aos="fade-up" data-aos-delay="100">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-fire"></i></div>
+                        <h3 class="card-title">Desde Fahrenheit</h3>
+                    </div>
+                    
+                    <div class="input-group-custom">
+                        <label for="T2">Ingresa temperatura en °F</label>
+                        <input type="number" id="T2" placeholder="32" step="any">
+                    </div>
+                    
+                    <button type="button" id="extraer2" class="btn btn-success btn-convertir">
+                        <i class="fas fa-arrow-right me-2"></i> Convertir
+                    </button>
+                    
+                    <div class="resultados" id="resultados-f">
+                        <div class="resultado-item">
+                            <span class="resultado-label">°C (Celsius)</span>
+                            <span class="resultado-valor" id="resultadof1">-</span>
+                        </div>
+                        <div class="resultado-item">
+                            <span class="resultado-label">°F (Fahrenheit)</span>
+                            <span class="resultado-valor" id="resultadof2">-</span>
+                        </div>
+                        <div class="resultado-item">
+                            <span class="resultado-label">K (Kelvin)</span>
+                            <span class="resultado-valor" id="resultadof3">-</span>
+                        </div>
+                        <div class="resultado-item">
+                            <span class="resultado-label">°R (Rankine)</span>
+                            <span class="resultado-valor" id="resultadof4">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta Kelvin -->
+                <div class="conversion-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-snowflake"></i></div>
+                        <h3 class="card-title">Desde Kelvin</h3>
+                    </div>
+                    
+                    <div class="input-group-custom">
+                        <label for="T3">Ingresa temperatura en K</label>
+                        <input type="number" id="T3" placeholder="273.15" step="any">
+                    </div>
+                    
+                    <button type="button" id="extraer3" class="btn btn-success btn-convertir">
+                        <i class="fas fa-arrow-right me-2"></i> Convertir
+                    </button>
+                    
+                    <div class="resultados" id="resultados-k">
+                        <div class="resultado-item">
+                            <span class="resultado-label">°C (Celsius)</span>
+                            <span class="resultado-valor" id="resultadok1">-</span>
+                        </div>
+                        <div class="resultado-item">
+                            <span class="resultado-label">°F (Fahrenheit)</span>
+                            <span class="resultado-valor" id="resultadok2">-</span>
+                        </div>
+                        <div class="resultado-item">
+                            <span class="resultado-label">K (Kelvin)</span>
+                            <span class="resultado-valor" id="resultadok3">-</span>
+                        </div>
+                        <div class="resultado-item">
+                            <span class="resultado-label">°R (Rankine)</span>
+                            <span class="resultado-valor" id="resultadok4">-</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tarjeta Rankine -->
+                <div class="conversion-card" data-aos="fade-up" data-aos-delay="300">
+                    <div class="card-header">
+                        <div class="card-icon"><i class="fas fa-sun"></i></div>
+                        <h3 class="card-title">Desde Rankine</h3>
+                    </div>
+                    
+                    <div class="input-group-custom">
+                        <label for="T4">Ingresa temperatura en °R</label>
+                        <input type="number" id="T4" placeholder="491.67" step="any">
+                    </div>
+                    
+                    <button type="button" id="extraer4" class="btn btn-success btn-convertir">
+                        <i class="fas fa-arrow-right me-2"></i> Convertir
+                    </button>
+                    
+                    <div class="resultados" id="resultados-r">
+                        <div class="resultado-item">
+                            <span class="resultado-label">°C (Celsius)</span>
+                            <span class="resultado-valor" id="resultador1">-</span>
+                        </div>
+                        <div class="resultado-item">
+                            <span class="resultado-label">°F (Fahrenheit)</span>
+                            <span class="resultado-valor" id="resultador2">-</span>
+                        </div>
+                        <div class="resultado-item">
+                            <span class="resultado-label">K (Kelvin)</span>
+                            <span class="resultado-valor" id="resultador3">-</span>
+                        </div>
+                        <div class="resultado-item">
+                            <span class="resultado-label">°R (Rankine)</span>
+                            <span class="resultado-valor" id="resultador4">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+  <script defer src="../footer.js"></script>
+    <div id="footer"></div>
+
+    <!-- WhatsApp Flotante -->
+    <a href="https://wa.me/573044435307?text=Hola,%20estoy%20interesado%20en%20sus%20servicios." class="whatsapp-flotante" target="_blank" aria-label="Contactar por WhatsApp">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+    <script>
+        // Inicializar AOS
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        // Scroll effect en navbar
+        const nav = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Función para formatear números
+        function formatNumber(num) {
+            return parseFloat(num).toFixed(2);
+        }
+
+        // Conversión desde Celsius
+        function convertirCelsius() {
+            const T1 = document.getElementById("T1").value;
+            if (!T1) {
+                alert("Por favor ingresa un valor en Celsius");
+                return;
+            }
+            
+            const c1 = parseFloat(T1);
+            const c2 = (T1 * (9/5)) + 32;
+            const c3 = parseFloat(T1) + 273.15;
+            const c4 = (T1 * (9/5)) + 491.67;
+
+            document.getElementById("resultadoc1").textContent = formatNumber(c1);
+            document.getElementById("resultadoc2").textContent = formatNumber(c2);
+            document.getElementById("resultadoc3").textContent = formatNumber(c3);
+            document.getElementById("resultadoc4").textContent = formatNumber(c4);
+            document.getElementById("resultados-c").classList.add("show");
+        }
+
+        // Conversión desde Fahrenheit
+        function convertirFahrenheit() {
+            const T2 = document.getElementById("T2").value;
+            if (!T2) {
+                alert("Por favor ingresa un valor en Fahrenheit");
+                return;
+            }
+            
+            const f1 = (T2 - 32) * (5/9);
+            const f2 = parseFloat(T2);
+            const f3 = (T2 - 32) * (5/9) + 273.15;
+            const f4 = parseFloat(T2) + 459.67;
+
+            document.getElementById("resultadof1").textContent = formatNumber(f1);
+            document.getElementById("resultadof2").textContent = formatNumber(f2);
+            document.getElementById("resultadof3").textContent = formatNumber(f3);
+            document.getElementById("resultadof4").textContent = formatNumber(f4);
+            document.getElementById("resultados-f").classList.add("show");
+        }
+
+        // Conversión desde Kelvin
+        function convertirKelvin() {
+            const T3 = document.getElementById("T3").value;
+            if (!T3) {
+                alert("Por favor ingresa un valor en Kelvin");
+                return;
+            }
+            
+            const k1 = parseFloat(T3) - 273.15;
+            const k2 = (k1 * (9/5)) + 32;
+            const k3 = parseFloat(T3);
+            const k4 = (k1 * (9/5)) + 491.67;
+
+            document.getElementById("resultadok1").textContent = formatNumber(k1);
+            document.getElementById("resultadok2").textContent = formatNumber(k2);
+            document.getElementById("resultadok3").textContent = formatNumber(k3);
+            document.getElementById("resultadok4").textContent = formatNumber(k4);
+            document.getElementById("resultados-k").classList.add("show");
+        }
+
+        // Conversión desde Rankine
+        function convertirRankine() {
+            const T4 = document.getElementById("T4").value;
+            if (!T4) {
+                alert("Por favor ingresa un valor en Rankine");
+                return;
+            }
+            
+            const r2 = parseFloat(T4) - 459.67;
+            const r1 = (r2 - 32) * (5/9);
+            const r3 = (r2 - 32) * (5/9) + 273.15;
+            const r4 = parseFloat(T4);
+
+            document.getElementById("resultador1").textContent = formatNumber(r1);
+            document.getElementById("resultador2").textContent = formatNumber(r2);
+            document.getElementById("resultador3").textContent = formatNumber(r3);
+            document.getElementById("resultador4").textContent = formatNumber(r4);
+            document.getElementById("resultados-r").classList.add("show");
+        }
+
+        // Event listeners
+        document.getElementById("extraer1").addEventListener("click", convertirCelsius);
+        document.getElementById("extraer2").addEventListener("click", convertirFahrenheit);
+        document.getElementById("extraer3").addEventListener("click", convertirKelvin);
+        document.getElementById("extraer4").addEventListener("click", convertirRankine);
+
+        // Permitir Enter para convertir
+        ["T1", "T2", "T3", "T4"].forEach((id, index) => {
+            document.getElementById(id).addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    [convertirCelsius, convertirFahrenheit, convertirKelvin, convertirRankine][index]();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

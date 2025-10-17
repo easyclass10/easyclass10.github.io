@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Fluidos - EasyClass</title>
+    <meta name="description" content="Calculadora de Reynolds y Factor de Fricción para análisis de fluidos">
+    <link rel="icon" href="nk.png" type="image/x-icon">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap');
+
+        :root {
+            --primary-green: #1DB954;
+            --secondary-red: #F44336;
+            --dark-bg: #121212;
+            --light-bg: #1e1e1e;
+            --text-color: #ffffff;
+            --text-muted: #b3b3b3;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            padding-top: 76px;
+        }
+
+        .navbar {
+            transition: background-color 0.4s ease-in-out;
+            background-color: rgba(18, 18, 18, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .brand-green { color: var(--primary-green); }
+        .brand-red { color: var(--secondary-red); }
+
+        .nav-link {
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-green);
+        }
+
+        .hero-section {
+            padding: 60px 0 40px;
+            background: linear-gradient(135deg, rgba(29, 185, 84, 0.1) 0%, rgba(18, 18, 18, 1) 100%);
+        }
+
+        .calculator-card {
+            background-color: var(--light-bg);
+            padding: 2.5rem;
+            border-radius: 15px;
+            border: 1px solid #282828;
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .calculator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(29, 185, 84, 0.2);
+        }
+
+        .formula-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin: 1rem 0;
+            background: white;
+            padding: 15px;
+        }
+
+        .banner-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            margin: 2rem 0;
+        }
+
+        .form-label {
+            color: var(--primary-green);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            background-color: #282828;
+            border: 1px solid #404040;
+            color: var(--text-color);
+            border-radius: 10px;
+            padding: 12px 15px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            background-color: #282828;
+            border-color: var(--primary-green);
+            color: var(--text-color);
+            box-shadow: 0 0 0 0.2rem rgba(29, 185, 84, 0.25);
+        }
+
+        .btn-success {
+            background-color: var(--primary-green);
+            border: none;
+            font-weight: 700;
+            padding: 12px 30px;
+            border-radius: 50px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-success:hover {
+            background-color: #1ed760;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(29, 185, 84, 0.4);
+        }
+
+        .result-box {
+            background: linear-gradient(135deg, var(--primary-green) 0%, #159946 100%);
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .result-box.empty {
+            background: #282828;
+            color: var(--text-muted);
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        .section-title {
+            color: var(--primary-green);
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-icon {
+            font-size: 2rem;
+            color: var(--primary-green);
+        }
+
+        footer {
+            background-color: #000;
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            margin: 0.5rem;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: white;
+        }
+
+        .social-link:hover {
+            background: var(--primary-green);
+            color: var(--dark-bg);
+            transform: translateY(-3px);
+        }
+
+        .whatsapp-flotante {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 25px;
+            right: 25px;
+            background-color: #25D366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s ease;
+        }
+
+        .whatsapp-flotante:hover {
+            transform: scale(1.1);
+            color: #FFF;
+        }
+
+        .input-group-text {
+            background-color: #282828;
+            border: 1px solid #404040;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <script defer src="../nav_otros.js"></script>
+    <div id="navBarra"></div>
+
+    <!--
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="index.html">
+                <img src="nk.png" alt="Logo de EasyClass" width="40" height="40" class="me-2">
+                <span class="brand-green">easy</span><span class="brand-red">class</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="herramientas.html">Herramientas</a></li>
+                    <li class="nav-item"><a class="nav-link" href="index.html#contacto">Contacto</a></li>
+                    <li class="nav-item ms-lg-3">
+                        <a class="btn btn-success" href="https://wa.me/573044435307?text=Hola,%20necesito%20ayuda%20con%20mecánica%20de%20fluidos" target="_blank">Pedir Ayuda</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>-->
+
+    <section class="hero-section">
+        <div class="container text-center">
+            <h1 class="display-4 fw-bold mb-3" data-aos="fade-down">
+                <i class="fas fa-water me-3"></i>Calculadora de Mecánica de Fluidos
+            </h1>
+            <p class="lead mb-4" data-aos="fade-up">Calcula el número de Reynolds y el factor de fricción de manera rápida y precisa</p>
+            <a href="javascript:history.back()" class="mb-2 btn btn-back btn-success btn-lg px-3 py-2">
+                <i class="fas fa-arrow-left"></i> Volver
+            </a>
+        </div>
+    </section>
+
+    <div id="calculadora_flui" class="container my-5">
+        <!-- Calculadora de Reynolds -->
+        <div class="calculator-card" data-aos="fade-up">
+            <h2 class="section-title">
+                <i class="fas fa-calculator section-icon"></i>
+                Cálculo del Número de Reynolds
+            </h2>
+            
+            <div class="text-center mb-4">
+                <img src="Captura1.JPG" alt="Info Reynolds" class="formula-img">
+            </div>
+
+            <div class="text-center mb-3">
+                <img src="Captura2.JPG" alt="Fórmula Reynolds" class="formula-img">
+            </div>
+
+            <h5 class="text-center mb-4" style="color: var(--text-muted);">Ingresa los datos del fluido y tubería:</h5>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Densidad (ρ)</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="x1" placeholder="Ingresa la densidad" step="any">
+                        <span class="input-group-text">kg/m³</span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Velocidad (V)</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="x2" placeholder="Ingresa la velocidad" step="any">
+                        <span class="input-group-text">m/s</span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Diámetro de tubería o diámetro hidráulico (D)</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="x3" placeholder="Ingresa el diámetro" step="any">
+                        <span class="input-group-text">m</span>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Viscosidad dinámica (μ)</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="x4" placeholder="Ingresa la viscosidad" step="any">
+                        <span class="input-group-text">Pa·s</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button class="btn btn-success btn-lg" id="extraer1">
+                    <i class="fas fa-play me-2"></i>Calcular Reynolds
+                </button>
+            </div>
+
+            <div class="result-box empty" id="resultado1">
+                El resultado aparecerá aquí
+            </div>
+        </div>
+
+        <!-- Calculadora de Factor de Fricción -->
+        <div class="calculator-card" data-aos="fade-up">
+            <h2 class="section-title">
+                <i class="fas fa-cog section-icon"></i>
+                Cálculo del Factor de Fricción
+            </h2>
+
+            <div class="text-center mb-4">
+                <img src="Captura3.JPG" alt="Fórmula Factor de Fricción" class="formula-img">
+            </div>
+
+            <div class="alert alert-info" style="background-color: rgba(29, 185, 84, 0.1); border-color: var(--primary-green); color: var(--text-color);">
+                <i class="fas fa-info-circle me-2"></i>
+                <strong>Nota:</strong> Este cálculo utiliza los datos ingresados anteriormente para el número de Reynolds.
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <label class="form-label">Rugosidad relativa (ε/D)</label>
+                    <div class="input-group">
+                        <input type="number" class="form-control" id="x6" placeholder="Ingresa la rugosidad relativa" step="any">
+                        <span class="input-group-text">adimensional</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <button class="btn btn-success btn-lg" id="extraer2">
+                    <i class="fas fa-play me-2"></i>Calcular Factor de Fricción
+                </button>
+            </div>
+
+            <div class="result-box empty" id="resultado2">
+                El resultado aparecerá aquí
+            </div>
+        </div>
+    </div>
+
+  <script defer src="../footer.js"></script>
+    <div id="footer"></div>
+
+    <a href="https://wa.me/573044435307?text=Hola,%20estoy%20interesado%20en%20sus%20servicios." class="whatsapp-flotante" target="_blank">
+        <i class="fa-brands fa-whatsapp"></i>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        // Cálculo de Reynolds
+        function Reynolds() {
+            var x1 = document.getElementById("x1");
+            var x2 = document.getElementById("x2");
+            var x3 = document.getElementById("x3");
+            var x4 = document.getElementById("x4");
+            var resultado1 = document.getElementById("resultado1");
+
+            if (!x1.value || !x2.value || !x3.value || !x4.value) {
+                resultado1.innerHTML = "⚠️ Por favor completa todos los campos";
+                resultado1.classList.add('empty');
+                return;
+            }
+
+            var x5 = (x1.value * x2.value * x3.value) / x4.value;
+            resultado1.innerHTML = "✅ El número de Reynolds es: <strong>" + x5.toFixed(2) + "</strong>";
+            resultado1.classList.remove('empty');
+        }
+
+        document.getElementById("extraer1").addEventListener("click", Reynolds);
+
+        // Cálculo del Factor de Fricción
+        function factor() {
+            var x1 = document.getElementById("x1");
+            var x2 = document.getElementById("x2");
+            var x3 = document.getElementById("x3");
+            var x4 = document.getElementById("x4");
+            var x6 = document.getElementById("x6");
+            var resultado2 = document.getElementById("resultado2");
+
+            if (!x1.value || !x2.value || !x3.value || !x4.value || !x6.value) {
+                resultado2.innerHTML = "⚠️ Por favor completa todos los campos necesarios";
+                resultado2.classList.add('empty');
+                return;
+            }
+
+            var x5 = (x1.value * x2.value * x3.value) / x4.value;
+            var a = 0.0001;
+            var error = 0.000001;
+            var b = 1000;
+            var f;
+            var x7;
+            var tol = 0.2;
+
+            while (tol > error) {
+                x7 = (a + b) / 2;
+                f = 1 / x7 ** 0.5 + 2 * Math.log10((x6.value * 1) / (3.7 * x3.value) + 2.51 / (x5 * x7 ** 0.5));
+                if (f < 0) {
+                    b = x7;
+                } else {
+                    a = x7;
+                }
+                tol = Math.abs(b - a);
+            }
+
+            resultado2.innerHTML = "✅ El factor de fricción es: <strong>" + x7.toFixed(6) + "</strong>";
+            resultado2.classList.remove('empty');
+        }
+
+        document.getElementById("extraer2").addEventListener("click", factor);
+    </script>
+</body>
+</html>
