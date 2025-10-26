@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyClass Asistente Virtual</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles2.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <script type="importmap">
+    {
+      "imports": {
+        "@google/generative-ai": "https://esm.run/@google/generative-ai",
+        "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
+      }
+    }
+    </script>
+
+    <script type="module" src="s.js"></script>
+</head>
+<body>
+
+    <div id="user-modal-overlay">
+        <div id="user-modal">
+            <h2>Bienvenido a EasyClass</h2>
+            <p>Para darte una atención personalizada, por favor ingresa tu país y número de WhatsApp.</p>
+            <form id="user-form">
+                <div class="form-group">
+                    <label for="country-name">País</label>
+                    <input type="text" id="country-name" list="country-list" placeholder="Escribe tu país..." autocomplete="off" required>
+                    <datalist id="country-list"></datalist>
+                </div>
+                <div class="form-group">
+                    <label for="country-code">Indicativo</label>
+                    <input type="text" id="country-code" placeholder="Se llenará solo..." readonly required>
+                </div>
+                <div class="form-group">
+                    <label for="whatsapp-number">Número de WhatsApp</label>
+                    <input type="tel" id="whatsapp-number" placeholder="Ej: 3044435307" required>
+                </div>
+                <button type="submit" id="modal-submit-btn">Ingresar al Chat</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="chat-widget-container">
+        <div class="chat-header">
+            <div class="brand-logo">
+                <span class="brand-green">easy</span>
+                <span class="brand-red">class</span>
+            </div>
+            <div class="header-info">
+                <h3>EasyClass Asistente</h3>
+                <p id="chat-status">Conectando...</p>
+            </div>
+        </div>
+        
+        <div class="chat-messages" id="chat-messages"></div>
+        
+        <div class="quick-replies" id="quick-replies"></div>
+        
+        <div id="special-inputs-container"></div>
+        <div class="chat-input-area">
+            <input type="file" id="file-upload-input" style="display: none;">
+            <button id="upload-btn" aria-label="Subir archivo">
+                <i class="fas fa-paperclip"></i>
+            </button>
+            <!--<input type="text" id="user-input" placeholder="Escribe tu mensaje..." autocomplete="off" disabled>-->
+            <textarea id="user-input" placeholder="Escribe tu mensaje..." rows="2" autocomplete="on" disabled></textarea>
+            <button id="send-btn" aria-label="Enviar mensaje" disabled>
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>
