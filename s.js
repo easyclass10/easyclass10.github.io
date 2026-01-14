@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 // -------------------------------------------------------------------
 // ⚠️ TUS CLAVES SECRETAS (PEGADAS DESDE TU SCRIPT)
 // -------------------------------------------------------------------
-const GEMINI_API_KEY = "AIzaSyAiz8613dVFC0cMmxgX_HJz63cXYmVJgBQ";
+const GEMINI_API_KEY = "AIzaSyAKsRWw5_mXwwcBUhXbA9y9HkgrdrXKTaM";
 const SUPABASE_URL = "https://cgpioodxsryqfyofjfvy.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNncGlvb2R4c3J5cWZ5b2ZqZnZ5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc3MTY2MjIsImV4cCI6MjA2MzI5MjYyMn0.TB8MmMzMc18hktGiWal_Fjmuq4ptqp7pz3mi0o8LJLY";
 // -------------------------------------------------------------------
@@ -766,4 +766,5 @@ function hideTypingIndicator() {
 
 function scrollToBottom() {
     chatMessages.scrollTop = chatMessages.scrollHeight;
+
 }
