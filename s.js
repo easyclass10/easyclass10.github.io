@@ -3,7 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 
 // ─── CONFIGURACIÓN ───────────────────────────────────────────────────────────
 // ⚠️ CAMBIA ESTA URL por la URL real de tu servicio en Render
-const BACKEND_URL = "https://TU-SERVICIO.onrender.com";
+const BACKEND_URL = "https://easyclass10-github-io.onrender.com";
 
 // Las claves de Supabase pueden quedar en el cliente porque son "anon" keys
 // y la seguridad real se gestiona con RLS en Supabase.
