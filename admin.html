@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EasyClass · Panel de Administración</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <script type="importmap">
+  {
+    "imports": {
+      "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
+    }
+  }
+  </script>
+
+  <style>
+    /* ── TOKENS ───────────────────────────────────────────────── */
+    :root {
+      --green:    #00c853;
+      --red:      #e53935;
+      --bg:       #0f1117;
+      --surface:  #1a1d27;
+      --surface2: #21253a;
+      --border:   #2a2f45;
+      --text:     #e8eaf6;
+      --muted:    #7986cb;
+      --accent:   #536dfe;
+      --warn:     #ffab40;
+      --font-body: 'Inter', sans-serif;
+      --font-brand:'Poppins', sans-serif;
+      --radius:   10px;
+      --shadow:   0 4px 24px rgba(0,0,0,0.4);
+    }
+
+    /* ── RESET ────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ──────────────────────────────────────────────── */
+    .sidebar {
+      width: 220px;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+    .brand {
+      font-family: var(--font-brand);
+      font-size: 1.4rem;
+      font-weight: 900;
+      margin-bottom: 28px;
+      padding-left: 8px;
+    }
+    .brand span.g { color: var(--green); }
+    .brand span.r { color: var(--red); }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      font-family: var(--font-body);
+      font-size: 0.88rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      text-align: left;
+    }
+    .nav-btn:hover { background: var(--surface2); color: var(--text); }
+    .nav-btn.active { background: var(--accent); color: #fff; }
+    .nav-btn i { width: 18px; text-align: center; }
+
+    .sidebar-footer {
+      margin-top: auto;
+      font-size: 0.75rem;
+      color: var(--border);
+      padding-left: 8px;
+    }
+
+    /* ── MAIN ─────────────────────────────────────────────────── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── TOPBAR ───────────────────────────────────────────────── */
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .topbar h1 { font-size: 1rem; font-weight: 600; }
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* ── LOGIN OVERLAY ────────────────────────────────────────── */
+    #login-overlay {
+      position: fixed; inset: 0;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .login-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px 36px;
+      width: 360px;
+      box-shadow: var(--shadow);
+    }
+    .login-card h2 {
+      font-family: var(--font-brand);
+      font-size: 1.3rem;
+      margin-bottom: 4px;
+    }
+    .login-card p { font-size: 0.85rem; color: var(--muted); margin-bottom: 28px; }
+    .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+    .field label { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+    .field input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      font-family: var(--font-body);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .field input:focus { border-color: var(--accent); }
+    #login-error { color: var(--red); font-size: 0.8rem; min-height: 18px; margin-bottom: 8px; }
+    .btn-primary {
+      width: 100%;
+      padding: 11px;
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+
+    /* ── CONTENT AREA ─────────────────────────────────────────── */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px;
+    }
+
+    /* ── SECTION ──────────────────────────────────────────────── */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .section-header h2 { font-size: 1.1rem; font-weight: 600; }
+    .refresh-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--muted);
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+    .refresh-btn:hover { color: var(--text); }
+
+    /* ── STAT CARDS ───────────────────────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+    }
+    .stat-card .label { font-size: 0.78rem; color: var(--muted); margin-bottom: 8px; }
+    .stat-card .value { font-size: 2rem; font-weight: 700; font-family: var(--font-brand); }
+    .stat-card .value.green { color: var(--green); }
+    .stat-card .value.accent { color: var(--accent); }
+    .stat-card .value.warn { color: var(--warn); }
+
+    /* ── TABLE ────────────────────────────────────────────────── */
+    .table-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+    thead {
+      background: var(--surface2);
+    }
+    th {
+      padding: 12px 16px;
+      text-align: left;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    td {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border);
+      vertical-align: top;
+      max-width: 360px;
+    }
+    tr:hover td { background: var(--surface2); }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 99px;
+      font-size: 0.73rem;
+      font-weight: 600;
+    }
+    .badge.examen  { background: rgba(229,57,53,0.15);  color: #ef9a9a; }
+    .badge.quiz    { background: rgba(255,171,64,0.15); color: var(--warn); }
+    .badge.clase   { background: rgba(0,200,83,0.15);   color: #69f0ae; }
+    .badge.otro    { background: rgba(83,109,254,0.15); color: #90caf9; }
+
+    .msg-preview {
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      max-height: 80px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ── CONVERSATION MODAL ───────────────────────────────────── */
+    #conv-modal {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 500;
+      align-items: center;
+      justify-content: center;
+    }
+    #conv-modal.open { display: flex; }
+    .conv-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      width: 600px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: var(--shadow);
+    }
+    .conv-header {
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .conv-header h3 { font-size: 0.95rem; font-weight: 600; }
+    .close-btn {
+      background: none; border: none; color: var(--muted);
+      font-size: 1.1rem; cursor: pointer; padding: 4px;
+    }
+    .close-btn:hover { color: var(--text); }
+    .conv-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 18px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .msg-row { display: flex; gap: 10px; }
+    .msg-row.user { flex-direction: row-reverse; }
+    .bubble {
+      max-width: 78%;
+      padding: 9px 13px;
+      border-radius: 12px;
+      font-size: 0.84rem;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+    .msg-row.model .bubble { background: var(--surface2); color: var(--text); border-bottom-left-radius: 3px; }
+    .msg-row.user  .bubble { background: var(--accent);   color: #fff;        border-bottom-right-radius: 3px; }
+
+    /* ── EMPTY / LOADING ──────────────────────────────────────── */
+    .empty {
+      text-align: center;
+      padding: 48px 0;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+    .spinner {
+      width: 28px; height: 28px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── SCROLLBAR ────────────────────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    /* ── MOBILE ───────────────────────────────────────────────── */
+    @media (max-width: 680px) {
+      .sidebar { display: none; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      td, th { padding: 10px 10px; }
+      .conv-card { width: 96vw; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════ LOGIN OVERLAY ═══════════════════ -->
+<div id="login-overlay">
+  <div class="login-card">
+    <h2><span style="color:var(--green)">easy</span><span style="color:var(--red)">class</span> Admin</h2>
+    <p>Acceso restringido · Solo administradores</p>
+    <div class="field">
+      <label>Correo electrónico</label>
+      <input type="email" id="admin-email" placeholder="admin@easyclass.co" />
+    </div>
+    <div class="field">
+      <label>Contraseña</label>
+      <input type="password" id="admin-pass" placeholder="••••••••" />
+    </div>
+    <div id="login-error"></div>
+    <button class="btn-primary" id="login-btn">
+      <i class="fas fa-sign-in-alt"></i> &nbsp;Ingresar
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+<nav class="sidebar">
+  <div class="brand"><span class="g">easy</span><span class="r">class</span></div>
+  <button class="nav-btn active" data-section="overview">
+    <i class="fas fa-chart-pie"></i> Resumen
+  </button>
+  <button class="nav-btn" data-section="agenda">
+    <i class="fas fa-calendar-check"></i> Agenda
+  </button>
+  <button class="nav-btn" data-section="chats">
+    <i class="fas fa-comments"></i> Conversaciones
+  </button>
+  <button class="nav-btn" data-section="users">
+    <i class="fas fa-users"></i> Usuarios
+  </button>
+  <div class="sidebar-footer">Solo lectura · v1.0</div>
+</nav>
+
+<!-- ═══════════════════ MAIN ═══════════════════ -->
+<div class="main">
+  <div class="topbar">
+    <h1 id="page-title">Resumen</h1>
+    <div class="status-badge"><div class="dot"></div> Conectado a Supabase</div>
+  </div>
+
+  <div class="content">
+
+    <!-- ── OVERVIEW ── -->
+    <section id="section-overview" class="section active">
+      <div class="stats-grid" id="stats-grid">
+        <div class="stat-card"><div class="label">Citas totales</div><div class="value accent" id="stat-total">–</div></div>
+        <div class="stat-card"><div class="label">Próximas 7 días</div><div class="value green" id="stat-week">–</div></div>
+        <div class="stat-card"><div class="label">Conversaciones</div><div class="value accent" id="stat-chats">–</div></div>
+        <div class="stat-card"><div class="label">Usuarios únicos</div><div class="value warn" id="stat-users">–</div></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Próximas citas</th>
+              <th>Materia</th>
+              <th>Cliente</th>
+              <th>Inicio</th>
+            </tr>
+          </thead>
+          <tbody id="upcoming-tbody"><tr><td colspan="4" class="empty"><div class="spinner"></div>Cargando…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── AGENDA ── -->
+    <section id="section-agenda" class="section">
+      <div class="section-header">
+        <h2>Agenda completa</h2>
+        <button class="refresh-btn" id="refresh-agenda"><i class="fas fa-sync-alt"></i> Actualizar</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Tipo</th>
+              <th>Materia</th>
+              <th>Cliente</th>
+              <th>Inicio</th>
+              <th>Fin</th>
+              <th>Precio</th>
+            </tr>
+          </thead>
+          <tbody id="agenda-tbody"><tr><td colspan="6" class="empty"><div class="spinner"></div>Cargando…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── CHATS ── -->
+    <section id="section-chats" class="section">
+      <div class="section-header">
+        <h2>Conversaciones</h2>
+        <button class="refresh-btn" id="refresh-chats"><i class="fas fa-sync-alt"></i> Actualizar</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>Último mensaje</th>
+              <th>Mensajes</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody id="chats-tbody"><tr><td colspan="4" class="empty"><div class="spinner"></div>Cargando…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ── USERS ── -->
+    <section id="section-users" class="section">
+      <div class="section-header">
+        <h2>Usuarios registrados</h2>
+        <button class="refresh-btn" id="refresh-users"><i class="fas fa-sync-alt"></i> Actualizar</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID / WhatsApp</th>
+              <th>País (indicativo)</th>
+              <th>Mensajes totales</th>
+              <th>Primera cita</th>
+            </tr>
+          </thead>
+          <tbody id="users-tbody"><tr><td colspan="4" class="empty"><div class="spinner"></div>Cargando…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<!-- ═══════════════════ CONVERSATION MODAL ═══════════════════ -->
+<div id="conv-modal">
+  <div class="conv-card">
+    <div class="conv-header">
+      <h3 id="conv-title">Conversación</h3>
+      <button class="close-btn" id="conv-close"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="conv-body" id="conv-body"></div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from "@supabase/supabase-js";
+
+// ─── CREDENCIALES SUPABASE ────────────────────────────────────────────────────
+const SUPABASE_URL = "https://qyegntfgtamllmwbdoeb.supabase.co";
+const SUPABASE_ANON_KEY ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5ZWdudGZndGFtbGxtd2Jkb2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjAxMDUsImV4cCI6MjA5NjU5NjEwNX0.ZJ6Fidp3zGb9FhrV8nSFFO7PTu-fjRhEuAO6OYfWWNw";
+
+// ─── ADMIN CREDENTIALS (hardcoded – cámbialos por los tuyos) ─────────────────
+// ⚠️ IMPORTANTE: Reemplaza esto con Supabase Auth o un archivo .env en producción.
+// Por ahora, la contraseña se valida en el navegador para un acceso básico.
+const ADMIN_EMAIL    = "easyclass.1help@gmail.com";   // ← CAMBIA ESTO
+const ADMIN_PASSWORD = "easyclass2026";       // ← CAMBIA ESTO
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// ─── NAVEGACIÓN ───────────────────────────────────────────────────────────────
+const sections = { overview: null, agenda: null, chats: null, users: null };
+const navBtns = document.querySelectorAll(".nav-btn");
+const pageTitle = document.getElementById("page-title");
+
+const sectionTitles = {
+  overview: "Resumen",
+  agenda:   "Agenda",
+  chats:    "Conversaciones",
+  users:    "Usuarios",
+};
+
+navBtns.forEach((btn) => {
+  btn.addEventListener("click", () => {
+    const id = btn.dataset.section;
+    navBtns.forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+    document.querySelectorAll(".section").forEach((s) => s.classList.remove("active"));
+    document.getElementById(`section-${id}`).classList.add("active");
+    pageTitle.textContent = sectionTitles[id];
+    loadSection(id);
+  });
+});
+
+// ─── LOGIN ────────────────────────────────────────────────────────────────────
+const loginOverlay = document.getElementById("login-overlay");
+const loginBtn     = document.getElementById("login-btn");
+const loginError   = document.getElementById("login-error");
+let authenticated  = false;
+
+loginBtn.addEventListener("click", () => {
+  const email = document.getElementById("admin-email").value.trim();
+  const pass  = document.getElementById("admin-pass").value;
+  if (email === ADMIN_EMAIL && pass === ADMIN_PASSWORD) {
+    authenticated = true;
+    loginOverlay.style.display = "none";
+    loadSection("overview");
+  } else {
+    loginError.textContent = "Credenciales incorrectas.";
+  }
+});
+
+// Enter key en el campo de contraseña
+document.getElementById("admin-pass").addEventListener("keypress", (e) => {
+  if (e.key === "Enter") loginBtn.click();
+});
+
+// ─── CARGA DE SECCIONES ───────────────────────────────────────────────────────
+async function loadSection(id) {
+  if (!authenticated) return;
+  if (id === "overview") await loadOverview();
+  if (id === "agenda")   await loadAgenda();
+  if (id === "chats")    await loadChats();
+  if (id === "users")    await loadUsers();
+}
+
+// ── OVERVIEW ──────────────────────────────────────────────────────────────────
+async function loadOverview() {
+  const now  = new Date().toISOString();
+  const week = new Date(Date.now() + 7 * 86400000).toISOString();
+
+  const [{ count: total }, { count: weekCount }, { count: chatCount }, { data: agenda }] =
+    await Promise.all([
+      supabase.from("agenda").select("*", { count: "exact", head: true }),
+      supabase.from("agenda").select("*", { count: "exact", head: true }).gt("start_time", now).lt("start_time", week),
+      supabase.from("chats").select("*", { count: "exact", head: true }),
+      supabase.from("agenda").select("service_type,subject,client_id,start_time")
+        .gt("start_time", now).order("start_time").limit(6),
+    ]);
+
+  document.getElementById("stat-total").textContent = total ?? "–";
+  document.getElementById("stat-week").textContent  = weekCount ?? "–";
+  document.getElementById("stat-chats").textContent = chatCount ?? "–";
+
+  // Usuarios únicos
+  const { data: chatsRaw } = await supabase.from("chats").select("user_id");
+  const unique = new Set((chatsRaw || []).map((c) => c.user_id)).size;
+  document.getElementById("stat-users").textContent = unique;
+
+  // Próximas citas
+  const tbody = document.getElementById("upcoming-tbody");
+  if (!agenda || agenda.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="4" class="empty">No hay citas próximas.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = agenda.map((a) => `
+    <tr>
+      <td><span class="badge ${a.service_type?.toLowerCase()}">${a.service_type ?? "–"}</span></td>
+      <td>${a.subject ?? "–"}</td>
+      <td><code style="color:var(--muted);font-size:0.8rem">${a.client_id}</code></td>
+      <td>${fmtDate(a.start_time)}</td>
+    </tr>`).join("");
+}
+
+// ── AGENDA ────────────────────────────────────────────────────────────────────
+async function loadAgenda() {
+  const tbody = document.getElementById("agenda-tbody");
+  tbody.innerHTML = `<tr><td colspan="6" class="empty"><div class="spinner"></div>Cargando…</td></tr>`;
+
+  const { data, error } = await supabase
+    .from("agenda")
+    .select("service_type, subject, client_id, start_time, end_time, details")
+    .order("start_time", { ascending: false });
+
+  if (error || !data) {
+    tbody.innerHTML = `<tr><td colspan="6" class="empty">Error al cargar agenda.</td></tr>`;
+    return;
+  }
+  if (data.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" class="empty">Sin registros.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = data.map((a) => {
+    const price = a.details?.price
+      ? `${Number(a.details.price).toLocaleString("es-CO")} ${a.details.currency ?? ""}`
+      : "–";
+    return `
+    <tr>
+      <td><span class="badge ${a.service_type?.toLowerCase()}">${a.service_type ?? "–"}</span></td>
+      <td>${a.subject ?? "–"}</td>
+      <td><code style="color:var(--muted);font-size:0.8rem">${a.client_id}</code></td>
+      <td>${fmtDate(a.start_time)}</td>
+      <td>${fmtDate(a.end_time)}</td>
+      <td>${price}</td>
+    </tr>`;
+  }).join("");
+}
+
+document.getElementById("refresh-agenda").addEventListener("click", loadAgenda);
+
+// ── CHATS ─────────────────────────────────────────────────────────────────────
+async function loadChats() {
+  const tbody = document.getElementById("chats-tbody");
+  tbody.innerHTML = `<tr><td colspan="4" class="empty"><div class="spinner"></div>Cargando…</td></tr>`;
+
+  const { data, error } = await supabase
+    .from("chats")
+    .select("user_id, history")
+    .order("user_id");
+
+  if (error || !data) {
+    tbody.innerHTML = `<tr><td colspan="4" class="empty">Error al cargar conversaciones.</td></tr>`;
+    return;
+  }
+  if (data.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="4" class="empty">Sin conversaciones.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = data.map((chat) => {
+    const history = Array.isArray(chat.history) ? chat.history : [];
+    const msgs    = history.length;
+    const last    = history.at(-1);
+    const preview = last ? stripTags(last.parts?.[0]?.text ?? "").substring(0, 90) : "–";
+    return `
+    <tr>
+      <td><code style="color:var(--muted);font-size:0.8rem">${chat.user_id}</code></td>
+      <td><div class="msg-preview">${preview}</div></td>
+      <td>${msgs}</td>
+      <td>
+        <button class="refresh-btn" onclick="openConversation('${chat.user_id}')">
+          <i class="fas fa-eye"></i> Ver
+        </button>
+      </td>
+    </tr>`;
+  }).join("");
+}
+
+document.getElementById("refresh-chats").addEventListener("click", loadChats);
+
+// ── USERS ─────────────────────────────────────────────────────────────────────
+async function loadUsers() {
+  const tbody = document.getElementById("users-tbody");
+  tbody.innerHTML = `<tr><td colspan="4" class="empty"><div class="spinner"></div>Cargando…</td></tr>`;
+
+  const [{ data: chatsData }, { data: agendaData }] = await Promise.all([
+    supabase.from("chats").select("user_id, history"),
+    supabase.from("agenda").select("client_id, start_time").order("start_time"),
+  ]);
+
+  if (!chatsData) {
+    tbody.innerHTML = `<tr><td colspan="4" class="empty">Error al cargar usuarios.</td></tr>`;
+    return;
+  }
+
+  const firstCita = {};
+  (agendaData || []).forEach((a) => {
+    if (!firstCita[a.client_id]) firstCita[a.client_id] = a.start_time;
+  });
+
+  tbody.innerHTML = chatsData.map((c) => {
+    const msgs    = Array.isArray(c.history) ? c.history.length : 0;
+    const country = c.user_id?.substring(0, 3) ?? "–"; // rough country code
+    return `
+    <tr>
+      <td><code style="color:var(--text)">${c.user_id}</code></td>
+      <td>+${country}…</td>
+      <td>${msgs}</td>
+      <td>${firstCita[c.user_id] ? fmtDate(firstCita[c.user_id]) : "Sin citas"}</td>
+    </tr>`;
+  }).join("");
+}
+
+document.getElementById("refresh-users").addEventListener("click", loadUsers);
+
+// ─── MODAL DE CONVERSACIÓN ────────────────────────────────────────────────────
+window.openConversation = async (userId) => {
+  const modal    = document.getElementById("conv-modal");
+  const body     = document.getElementById("conv-body");
+  const title    = document.getElementById("conv-title");
+
+  title.textContent = `Chat · ${userId}`;
+  body.innerHTML = `<div class="empty"><div class="spinner"></div>Cargando…</div>`;
+  modal.classList.add("open");
+
+  const { data } = await supabase
+    .from("chats")
+    .select("history")
+    .eq("user_id", userId)
+    .single();
+
+  const history = data?.history ?? [];
+  if (history.length === 0) {
+    body.innerHTML = `<div class="empty">Sin mensajes.</div>`;
+    return;
+  }
+
+  body.innerHTML = history.map((msg) => {
+    const text = stripTags(msg.parts?.[0]?.text ?? "");
+    return `
+    <div class="msg-row ${msg.role}">
+      <div class="bubble">${text}</div>
+    </div>`;
+  }).join("");
+
+  // Scroll al fondo
+  body.scrollTop = body.scrollHeight;
+};
+
+document.getElementById("conv-close").addEventListener("click", () => {
+  document.getElementById("conv-modal").classList.remove("open");
+});
+
+document.getElementById("conv-modal").addEventListener("click", (e) => {
+  if (e.target === document.getElementById("conv-modal"))
+    document.getElementById("conv-modal").classList.remove("open");
+});
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function fmtDate(iso) {
+  if (!iso) return "–";
+  return new Date(iso).toLocaleString("es-CO", {
+    day: "2-digit", month: "short", year: "numeric",
+    hour: "2-digit", minute: "2-digit",
+  });
+}
+
+function stripTags(str) {
+  return str
+    .replace(/\[BOOKING_JSON\][\s\S]*?\[\/BOOKING_JSON\]/g, "[cita agendada]")
+    .replace(/\[button:[^\]]+\]/g, "")
+    .replace(/\[REQUEST_DATE\]/g, "")
+    .replace(/\[REQUEST_TIME\]/g, "")
+    .replace(/\[CONTEXTO_AGENDA:[^\]]*\]/g, "")
+    .replace(/\[MENSAJE_USUARIO:/g, "")
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/\*(.*?)\*/g, "$1")
+    .trim();
+}
+</script>
+</body>
+</html>
