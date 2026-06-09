@@ -379,7 +379,6 @@
 </head>
 <body>
 
-<!-- ═══════════════════ LOGIN OVERLAY ═══════════════════ -->
 <div id="login-overlay">
   <div class="login-card">
     <h2><span style="color:var(--green)">easy</span><span style="color:var(--red)">class</span> Admin</h2>
@@ -399,7 +398,6 @@
   </div>
 </div>
 
-<!-- ═══════════════════ SIDEBAR ═══════════════════ -->
 <nav class="sidebar">
   <div class="brand"><span class="g">easy</span><span class="r">class</span></div>
   <button class="nav-btn active" data-section="overview">
@@ -417,7 +415,6 @@
   <div class="sidebar-footer">Solo lectura · v1.0</div>
 </nav>
 
-<!-- ═══════════════════ MAIN ═══════════════════ -->
 <div class="main">
   <div class="topbar">
     <h1 id="page-title">Resumen</h1>
@@ -426,7 +423,6 @@
 
   <div class="content">
 
-    <!-- ── OVERVIEW ── -->
     <section id="section-overview" class="section active">
       <div class="stats-grid" id="stats-grid">
         <div class="stat-card"><div class="label">Citas totales</div><div class="value accent" id="stat-total">–</div></div>
@@ -449,7 +445,6 @@
       </div>
     </section>
 
-    <!-- ── AGENDA ── -->
     <section id="section-agenda" class="section">
       <div class="section-header">
         <h2>Agenda completa</h2>
@@ -472,7 +467,6 @@
       </div>
     </section>
 
-    <!-- ── CHATS ── -->
     <section id="section-chats" class="section">
       <div class="section-header">
         <h2>Conversaciones</h2>
@@ -493,7 +487,6 @@
       </div>
     </section>
 
-    <!-- ── USERS ── -->
     <section id="section-users" class="section">
       <div class="section-header">
         <h2>Usuarios registrados</h2>
@@ -514,11 +507,7 @@
       </div>
     </section>
 
-  </div><!-- /content -->
-</div><!-- /main -->
-
-<!-- ═══════════════════ CONVERSATION MODAL ═══════════════════ -->
-<div id="conv-modal">
+  </div></div><div id="conv-modal">
   <div class="conv-card">
     <div class="conv-header">
       <h3 id="conv-title">Conversación</h3>
@@ -536,7 +525,7 @@ const SUPABASE_URL = "https://qyegntfgtamllmwbdoeb.supabase.co";
 const SUPABASE_ANON_KEY ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5ZWdudGZndGFtbGxtd2Jkb2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjAxMDUsImV4cCI6MjA5NjU5NjEwNX0.ZJ6Fidp3zGb9FhrV8nSFFO7PTu-fjRhEuAO6OYfWWNw";
 
 // ─── ADMIN CREDENTIALS (hardcoded – cámbialos por los tuyos) ─────────────────
-const ADMIN_EMAIL    = "easyclass.1help@gmail.com";   
+const ADMIN_EMAIL    = "easy";   
 const ADMIN_PASSWORD = "eas";       
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -813,6 +802,7 @@ document.getElementById("conv-modal").addEventListener("click", (e) => {
 function fmtDate(iso) {
   if (!iso) return "–";
   return new Date(iso).toLocaleString("es-CO", {
+    timeZone: "UTC", // ← ESTA ES LA LÍNEA NUEVA QUE FUERZA EL USO DE UTC
     day: "2-digit", month: "short", year: "numeric",
     hour: "2-digit", minute: "2-digit",
   });
