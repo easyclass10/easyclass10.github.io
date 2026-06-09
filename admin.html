@@ -205,6 +205,22 @@
     }
     .refresh-btn:hover { color: var(--text); }
 
+    /* ── WHATSAPP LINK ────────────────────────────────────────── */
+    .wa-link {
+      color: var(--green);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.85rem;
+      font-family: var(--font-body);
+      transition: opacity 0.2s;
+    }
+    .wa-link:hover {
+      opacity: 0.7;
+      text-decoration: underline;
+    }
+
     /* ── STAT CARDS ───────────────────────────────────────────── */
     .stats-grid {
       display: grid;
@@ -303,7 +319,7 @@
       border-bottom: 1px solid var(--border);
       display: flex; align-items: center; justify-content: space-between;
     }
-    .conv-header h3 { font-size: 0.95rem; font-weight: 600; }
+    .conv-header h3 { font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
     .close-btn {
       background: none; border: none; color: var(--muted);
       font-size: 1.1rem; cursor: pointer; padding: 4px;
@@ -520,10 +536,8 @@ const SUPABASE_URL = "https://qyegntfgtamllmwbdoeb.supabase.co";
 const SUPABASE_ANON_KEY ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF5ZWdudGZndGFtbGxtd2Jkb2ViIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMjAxMDUsImV4cCI6MjA5NjU5NjEwNX0.ZJ6Fidp3zGb9FhrV8nSFFO7PTu-fjRhEuAO6OYfWWNw";
 
 // ─── ADMIN CREDENTIALS (hardcoded – cámbialos por los tuyos) ─────────────────
-// ⚠️ IMPORTANTE: Reemplaza esto con Supabase Auth o un archivo .env en producción.
-// Por ahora, la contraseña se valida en el navegador para un acceso básico.
-const ADMIN_EMAIL    = "easyclass.1help@gmail.com";   // ← CAMBIA ESTO
-const ADMIN_PASSWORD = "easyclass2026";       // ← CAMBIA ESTO
+const ADMIN_EMAIL    = "easyclass.1help@gmail.com";   
+const ADMIN_PASSWORD = "eas";       
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
@@ -569,7 +583,6 @@ loginBtn.addEventListener("click", () => {
   }
 });
 
-// Enter key en el campo de contraseña
 document.getElementById("admin-pass").addEventListener("keypress", (e) => {
   if (e.key === "Enter") loginBtn.click();
 });
@@ -616,7 +629,11 @@ async function loadOverview() {
     <tr>
       <td><span class="badge ${a.service_type?.toLowerCase()}">${a.service_type ?? "–"}</span></td>
       <td>${a.subject ?? "–"}</td>
-      <td><code style="color:var(--muted);font-size:0.8rem">${a.client_id}</code></td>
+      <td>
+        <a href="${buildWaUrl(a.client_id, null, a.subject)}" target="_blank" class="wa-link">
+          <i class="fab fa-whatsapp"></i> ${a.client_id}
+        </a>
+      </td>
       <td>${fmtDate(a.start_time)}</td>
     </tr>`).join("");
 }
@@ -648,7 +665,11 @@ async function loadAgenda() {
     <tr>
       <td><span class="badge ${a.service_type?.toLowerCase()}">${a.service_type ?? "–"}</span></td>
       <td>${a.subject ?? "–"}</td>
-      <td><code style="color:var(--muted);font-size:0.8rem">${a.client_id}</code></td>
+      <td>
+        <a href="${buildWaUrl(a.client_id, null, a.subject)}" target="_blank" class="wa-link">
+          <i class="fab fa-whatsapp"></i> ${a.client_id}
+        </a>
+      </td>
       <td>${fmtDate(a.start_time)}</td>
       <td>${fmtDate(a.end_time)}</td>
       <td>${price}</td>
@@ -682,9 +703,14 @@ async function loadChats() {
     const msgs    = history.length;
     const last    = history.at(-1);
     const preview = last ? stripTags(last.parts?.[0]?.text ?? "").substring(0, 90) : "–";
+
     return `
     <tr>
-      <td><code style="color:var(--muted);font-size:0.8rem">${chat.user_id}</code></td>
+      <td>
+        <a href="${buildWaUrl(chat.user_id, history)}" target="_blank" class="wa-link">
+          <i class="fab fa-whatsapp"></i> ${chat.user_id}
+        </a>
+      </td>
       <td><div class="msg-preview">${preview}</div></td>
       <td>${msgs}</td>
       <td>
@@ -720,10 +746,15 @@ async function loadUsers() {
 
   tbody.innerHTML = chatsData.map((c) => {
     const msgs    = Array.isArray(c.history) ? c.history.length : 0;
-    const country = c.user_id?.substring(0, 3) ?? "–"; // rough country code
+    const country = c.user_id?.substring(0, 3) ?? "–"; 
+
     return `
     <tr>
-      <td><code style="color:var(--text)">${c.user_id}</code></td>
+      <td>
+        <a href="${buildWaUrl(c.user_id, c.history)}" target="_blank" class="wa-link">
+          <i class="fab fa-whatsapp"></i> ${c.user_id}
+        </a>
+      </td>
       <td>+${country}…</td>
       <td>${msgs}</td>
       <td>${firstCita[c.user_id] ? fmtDate(firstCita[c.user_id]) : "Sin citas"}</td>
@@ -738,8 +769,7 @@ window.openConversation = async (userId) => {
   const modal    = document.getElementById("conv-modal");
   const body     = document.getElementById("conv-body");
   const title    = document.getElementById("conv-title");
-
-  title.textContent = `Chat · ${userId}`;
+  
   body.innerHTML = `<div class="empty"><div class="spinner"></div>Cargando…</div>`;
   modal.classList.add("open");
 
@@ -750,6 +780,10 @@ window.openConversation = async (userId) => {
     .single();
 
   const history = data?.history ?? [];
+  
+  // Asignamos el enlace con el historial ya cargado en el header del modal
+  title.innerHTML = `Chat · <a href="${buildWaUrl(userId, history)}" target="_blank" class="wa-link"><i class="fab fa-whatsapp"></i> Escribir a ${userId}</a>`;
+
   if (history.length === 0) {
     body.innerHTML = `<div class="empty">Sin mensajes.</div>`;
     return;
@@ -763,7 +797,6 @@ window.openConversation = async (userId) => {
     </div>`;
   }).join("");
 
-  // Scroll al fondo
   body.scrollTop = body.scrollHeight;
 };
 
@@ -796,6 +829,41 @@ function stripTags(str) {
     .replace(/\*\*(.*?)\*\*/g, "$1")
     .replace(/\*(.*?)\*/g, "$1")
     .trim();
+}
+
+/**
+ * Genera el enlace de WhatsApp con un mensaje pre-llenado basado en el historial
+ * o en el nombre de la materia (si proviene de la tabla agenda sin historial).
+ */
+function buildWaUrl(phone, history = null, subject = null) {
+  const cleanPhone = (phone || "").replace(/\D/g, "");
+  let textContent = "";
+
+  if (history && Array.isArray(history) && history.length > 0) {
+    textContent = "Hola, te escribo desde EasyClass. Revisando nuestra conversación:\n\n";
+    
+    // Tomamos solo los últimos 6 mensajes para no romper la URL por longitud
+    const recentHistory = history.slice(-6);
+    
+    recentHistory.forEach(msg => {
+      const role = msg.role === 'user' ? 'Tú' : 'EasyClass';
+      const text = stripTags(msg.parts?.[0]?.text ?? "");
+      if (text) {
+        textContent += `*${role}:* ${text}\n\n`;
+      }
+    });
+  } else if (subject) {
+    textContent = `Hola, te escribo desde EasyClass respecto a tu cita de ${subject}. `;
+  } else {
+    textContent = "Hola, te escribo desde EasyClass. ¿En qué te podemos ayudar?";
+  }
+
+  // Asegurar que el mensaje no supere el límite de seguridad de ~2000 caracteres para la URL
+  if (textContent.length > 1500) {
+    textContent = textContent.substring(0, 1500) + "... [texto truncado]";
+  }
+
+  return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(textContent)}`;
 }
 </script>
 </body>
