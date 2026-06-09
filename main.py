@@ -169,7 +169,7 @@ def chat():
 
     try:
         model = genai.GenerativeModel(
-            model_name="gemini-2.5-flash",
+            model_name="gemini-2.5-flash-lite",
             system_instruction=EASYCLASS_SYSTEM_PROMPT,
         )
 
