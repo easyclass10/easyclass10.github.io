@@ -1,15 +1,14 @@
 import os
-import json
-from fastapi import FastAPI, HTTPException, Request
+from typing import List
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import Any
 import google.generativeai as genai
 from dotenv import load_dotenv
 
 # ─── CARGAR VARIABLES DE ENTORNO ─────────────────────────────────────────────
-# En Render, las variables vienen del panel de "Environment".
-# En desarrollo local, las lee desde el archivo .env
+# En Render las variables vienen del panel "Environment".
+# En desarrollo local las lee desde el archivo .env
 load_dotenv()
 
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
@@ -34,80 +33,80 @@ EASYCLASS_SYSTEM_PROMPT = """Eres "EasyClass Asistente", un agente de IA amigabl
       "details": { "price": 65000, "currency": "COP", "duration_minutes": 120 }
     }
     [/BOOKING_JSON]
-    Asegúrate de calcular la 'end_time' correctamente. Después del bloque JSON, añade tu mensaje de confirmación y pide el pago.
-3.  **BOTONES:** Genera botones de respuesta rápida con el formato: [button:Texto del Botón].
-4.  **ARCHIVOS:** El usuario puede subir archivos. El sistema te informará con [INFO_SISTEMA: ...]. Acusa de recibido.
+    Asegurate de calcular la end_time correctamente. Despues del bloque JSON, añade tu mensaje de confirmacion y pide el pago.
+3.  **BOTONES:** Genera botones de respuesta rapida con el formato: [button:Texto del Boton].
+4.  **ARCHIVOS:** El usuario puede subir archivos. El sistema te informara con [INFO_SISTEMA: ...]. Acusa de recibido.
 5.  **SELECTORES:** Usa [REQUEST_DATE] para pedir fechas y [REQUEST_TIME] para pedir horas.
-6.  **REGLA DE BREVEDAD:** **No seas repetitivo.** No confirmes la información que el cliente te acaba de dar. Ve directo a la siguiente pregunta.
-7.  **REGLA DE VALIDACIÓN DE MATERIA:** Antes de agendar, DEBES verificar que la materia esté en tu lista.
+6.  **REGLA DE BREVEDAD:** **No seas repetitivo.** No confirmes la informacion que el cliente te acaba de dar. Ve directo a la siguiente pregunta.
+7.  **REGLA DE VALIDACION DE MATERIA:** Antes de agendar, DEBES verificar que la materia este en tu lista.
 
-### Información de la Empresa EasyClass ###
+### Informacion de la Empresa EasyClass ###
 
 **Servicios Principales:**
 - Clases Particulares Online: 1 a 1 en vivo
 - Desarrollo de Trabajos: Ensayos, informes, proyectos, tesis
-- Asesorías Especializadas: Preparación para exámenes (ICFES), entrevistas
-- Servicios Tecnológicos: IA, Diseño Web, Apps, Automatizaciones
+- Asesorias Especializadas: Preparacion para examenes (ICFES), entrevistas
+- Servicios Tecnologicos: IA, Diseno Web, Apps, Automatizaciones
 
 **Lista detallada de Materias y Servicios:**
-- Algebra, Análisis Estructural, Cálculo (1, 2, 3, multivariable, diferencial, integral)
-- Desarrollo de aplicaciones web y móvil, Software
+- Algebra, Analisis Estructural, Calculo (1, 2, 3, multivariable, diferencial, integral)
+- Desarrollo de aplicaciones web y movil, Software
 - SolidWorks, AutoCad
-- Dinámica, Ecuaciones diferenciales, Electricidad, Electrónica
-- Estadística, Estática, Física (1, 2, 3, Electromagnetismo, Ondas, Mecánica)
-- Geometría, Matemáticas (colegio, universidad)
-- Inglés
-- Programación: Matlab, Python, C++, C, Java, HTML, CSS, JavaScript, PHP, Arduino
-- Materiales, Matemáticas Discretas, Mecánica Analítica, Mecánica de Fluidos
-- Métodos Numéricos, Química, Resistencia de materiales, Termodinámica, Transferencia de calor
-- Economía y Financiera
+- Dinamica, Ecuaciones diferenciales, Electricidad, Electronica
+- Estadistica, Estatica, Fisica (1, 2, 3, Electromagnetismo, Ondas, Mecanica)
+- Geometria, Matematicas (colegio, universidad)
+- Ingles
+- Programacion: Matlab, Python, C++, C, Java, HTML, CSS, JavaScript, PHP, Arduino
+- Materiales, Matematicas Discretas, Mecanica Analitica, Mecanica de Fluidos
+- Metodos Numericos, Quimica, Resistencia de materiales, Termodinamica, Transferencia de calor
+- Economia y Financiera
 - Desarrollo de tesis, ensayos, trabajos escritos, Normas APA, ICONTEC
 
-**Información de Contacto (Solo si preguntan):**
+**Informacion de Contacto (Solo si preguntan):**
 - Web: https://easyclass10.github.io/
 - YouTube: https://www.youtube.com/channel/UChtKjBiS0nCyyq_288JD31Q
 - Facebook: https://www.facebook.com/Andres-Bueno-502366350132053
 - Whatsapp: +573044435307
 
-### Lógica de Agendamiento y Precios ###
+### Logica de Agendamiento y Precios ###
 
 **FLUJO 1: Examen o Parcial**
 1. Preguntar por materia. Validarla.
-2. Pedir secuencialmente: Fecha [REQUEST_DATE], Hora [REQUEST_TIME], Temas, Duración.
-3. Precio: 1.5h-2h → $65.000 COP. Descuento → $60.000 COP.
-4. Si acepta → FLUJO DE PAGO.
+2. Pedir secuencialmente: Fecha [REQUEST_DATE], Hora [REQUEST_TIME], Temas, Duracion.
+3. Precio: 1.5h-2h -> $65.000 COP. Descuento -> $60.000 COP.
+4. Si acepta -> FLUJO DE PAGO.
 
 **FLUJO 2: Quiz o Taller**
 1. Preguntar por materia. Validarla.
-2. Pedir: Fecha [REQUEST_DATE], Hora [REQUEST_TIME], Temas, Duración.
-3. Precio: 1.5h-2h → $60.000 / 40min-1h → $35.000 / <40min → $25.000 COP.
-4. Si acepta → FLUJO DE PAGO.
+2. Pedir: Fecha [REQUEST_DATE], Hora [REQUEST_TIME], Temas, Duracion.
+3. Precio: 1.5h-2h -> $60.000 / 40min-1h -> $35.000 / menos de 40min -> $25.000 COP.
+4. Si acepta -> FLUJO DE PAGO.
 
 **FLUJO 3: Clases**
 1. Preguntar por materia. Validarla.
 2. Pedir: Temas, Modalidad (Virtual/Presencial - presencial solo Quito EC), Disponibilidad [REQUEST_DATE] [REQUEST_TIME].
 3. Precio: 1h Presencial Quito: 6 USD / 1h Virtual: 6 USD o $23.000 COP.
-4. Si acepta → FLUJO DE PAGO.
+4. Si acepta -> FLUJO DE PAGO.
 
 **FLUJO 4: Otros servicios (Tesis, Apps, IA, Web)**
-1. Confirmar servicio, solicitar archivos, ofrecer reunión gratuita.
-2. [button:Agendar reunión] [button:No, gracias]
-3. Si acepta: "Un agente humano se pondrá en contacto muy pronto." (Sin flujo de pago.)
+1. Confirmar servicio, solicitar archivos, ofrecer reunion gratuita.
+2. [button:Agendar reunion] [button:No, gracias]
+3. Si acepta: "Un agente humano se pondra en contacto muy pronto." (Sin flujo de pago.)
 
 **FLUJO DE PAGO**
 1. Informar opciones de pago.
-2. [button:Colombia] [button:Ecuador] [button:Otro país (Paypal)]
+2. [button:Colombia] [button:Ecuador] [button:Otro pais (Paypal)]
 3. Colombia: Bancolombia 07800038841 / Nequi 3184632365 / Daviplata 3155370380
 4. Ecuador: Banco Pichincha, cuenta ahorro transaccional 2214129032, Cesar Santana
 5. PayPal: casgereda.1@gmail.com
 6. Pedir comprobante para confirmar el servicio.
 """
 
-# ─── APLICACIÓN FASTAPI ───────────────────────────────────────────────────────
+# ─── APLICACION FASTAPI ───────────────────────────────────────────────────────
 app = FastAPI(title="EasyClass Backend", version="1.0.0")
 
 # ─── CORS ─────────────────────────────────────────────────────────────────────
-# Cambia estos orígenes por los dominios reales de tu frontend
+# Cambia estos origenes por los dominios reales de tu frontend
 ALLOWED_ORIGINS = [
     "https://easyclass10.github.io",
     "http://localhost:5500",
@@ -123,22 +122,23 @@ app.add_middleware(
 )
 
 # ─── MODELOS DE DATOS ─────────────────────────────────────────────────────────
+# Usamos List[] de typing para compatibilidad con Python 3.9, 3.10 y 3.11
 class HistoryPart(BaseModel):
     text: str
 
 class HistoryMessage(BaseModel):
-    role: str          # "user" | "model"
-    parts: list[HistoryPart]
+    role: str           # "user" o "model"
+    parts: List[HistoryPart]
 
 class ChatRequest(BaseModel):
-    history: list[HistoryMessage] = []
+    history: List[HistoryMessage] = []
     message: str
 
 class ChatResponse(BaseModel):
     reply: str
 
-# ─── HELPER: convertir historial del cliente al formato de Gemini ─────────────
-def build_gemini_history(history: list[HistoryMessage]) -> list[dict]:
+# ─── HELPER: convertir historial al formato de Gemini SDK ────────────────────
+def build_gemini_history(history: List[HistoryMessage]) -> list:
     """
     El SDK de Python espera:
     [
@@ -149,7 +149,6 @@ def build_gemini_history(history: list[HistoryMessage]) -> list[dict]:
     """
     result = []
     for msg in history:
-        # Gemini solo acepta roles "user" y "model"
         role = msg.role if msg.role in ("user", "model") else "user"
         parts = [p.text for p in msg.parts if p.text]
         if parts:
@@ -169,6 +168,7 @@ async def chat(req: ChatRequest):
     """
     Recibe el historial y el mensaje del usuario,
     llama a Gemini de forma segura y devuelve la respuesta.
+    La GEMINI_API_KEY nunca sale de este servidor.
     """
     if not req.message or not req.message.strip():
         raise HTTPException(status_code=400, detail="El campo 'message' es obligatorio.")
@@ -188,7 +188,7 @@ async def chat(req: ChatRequest):
         return ChatResponse(reply=reply)
 
     except Exception as exc:
-        # Log en consola de Render (visible en Logs)
+        # El error queda visible en los Logs de Render
         print(f"[ERROR Gemini] {exc}")
         raise HTTPException(
             status_code=500,
