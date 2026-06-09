@@ -250,14 +250,24 @@ async function processBotResponse(botReply) {
 
   if (bookingJsonMatch && bookingJsonMatch[1]) {
     try {
-      const bookingData = JSON.parse(bookingJsonMatch[1]);
+      // 1. Extraer el texto y limpiar posibles etiquetas Markdown (```json ... ```)
+      let rawJson = bookingJsonMatch[1].trim();
+      rawJson = rawJson.replace(/^```(json)?/i, '').replace(/```$/i, '').trim();
+
+      // 2. Parsear el JSON
+      const bookingData = JSON.parse(rawJson);
       bookingData.client_id = currentUserInfo.id;
+
+      console.log("Intentando guardar cita en Supabase:", bookingData); // <-- Log útil
+      
+      // 3. Guardar en la base de datos
       await bookServiceInAgenda(bookingData);
+      
       cleanReply = cleanReply.replace(bookingJsonMatch[0], "");
       addBotMessage("✅ ¡Perfecto! Tu cita ha sido registrada en nuestra agenda.");
     } catch (error) {
-      console.error("Error al guardar la cita:", error);
-      addBotMessage("⚠️ Hubo un problema al guardar tu cita. Por favor, intenta de nuevo.");
+      console.error("Error al procesar/guardar la cita:", error); // <-- Te dirá si es error de JSON o de Supabase
+      addBotMessage("⚠️ Hubo un problema al agendar tu cita internamente.");
       cleanReply = cleanReply.replace(bookingJsonMatch[0], "");
     }
   }
