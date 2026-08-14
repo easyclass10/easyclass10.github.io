@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#14213A">
+<title>EasyClass · Asistente</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+<!-- Gemini eliminado: todo pasa por la Edge Function de Supabase -->
+<script type="importmap">
+{
+  "imports": {
+    "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"
+  }
+}
+</script>
+<script type="module" src="s.js"></script>
+
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   EasyClass · hoja de estilos del widget
+   Concepto: cuaderno cuadriculado. El renglón rojo del margen
+   identifica al asistente; el verde de la marca, al estudiante.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root{
+  --papel:#FAFAF7;
+  --papel-alto:#FFFFFF;
+  --tinta:#14213A;
+  --grafito:#5C6779;
+  --verde:#12A150;
+  --verde-hondo:#0B7A3B;
+  --rojo:#E0304A;
+  --linea:rgba(20,33,58,.10);
+  --cuadricula:rgba(20,33,58,.055);
+  --radio:16px;
+  --sombra:0 1px 2px rgba(20,33,58,.05), 0 18px 40px -22px rgba(20,33,58,.45);
+  --paso:22px;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+html,body{height:100%}
+
+body{
+  font-family:'Poppins',system-ui,sans-serif;
+  color:var(--tinta);
+  background:
+    radial-gradient(120% 90% at 50% 0%, #EFF2F0 0%, #E4E8EB 55%, #DDE2E6 100%);
+  display:grid;
+  place-items:center;
+  padding:clamp(0px,3vw,28px);
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ─── CONTENEDOR ──────────────────────────────────────────────── */
+.chat-widget-container{
+  width:min(100%,460px);
+  height:min(100dvh,760px);
+  display:flex;
+  flex-direction:column;
+  background:var(--papel);
+  border-radius:var(--radio);
+  box-shadow:var(--sombra);
+  overflow:hidden;
+  position:relative;
+}
+@media (max-width:520px){
+  body{padding:0}
+  .chat-widget-container{height:100dvh;border-radius:0}
+}
+
+/* ─── ENCABEZADO ──────────────────────────────────────────────── */
+.chat-header{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:16px 18px;
+  background:var(--tinta);
+  color:#fff;
+  position:relative;
+  flex-shrink:0;
+}
+.chat-header::after{
+  content:"";
+  position:absolute;left:0;right:0;bottom:0;height:3px;
+  background:linear-gradient(90deg,var(--verde) 0 62%,var(--rojo) 62% 100%);
+}
+
+.brand-logo{
+  font-weight:900;
+  font-size:1.05rem;
+  letter-spacing:-.03em;
+  background:#fff;
+  color:var(--tinta);
+  padding:9px 11px;
+  border-radius:10px;
+  line-height:1;
+  flex-shrink:0;
+}
+.brand-green{color:var(--verde)}
+.brand-red{color:var(--rojo)}
+
+.header-info h3{
+  font-size:1rem;
+  font-weight:600;
+  letter-spacing:-.01em;
+}
+.header-info p{
+  font-size:.76rem;
+  color:rgba(255,255,255,.66);
+  display:flex;
+  align-items:center;
+  gap:6px;
+  margin-top:2px;
+}
+.header-info p::before{
+  content:"";
+  width:6px;height:6px;border-radius:50%;
+  background:var(--verde);
+  box-shadow:0 0 0 0 rgba(18,161,80,.6);
+  animation:latido 2.4s ease-out infinite;
+}
+@keyframes latido{
+  0%{box-shadow:0 0 0 0 rgba(18,161,80,.55)}
+  70%{box-shadow:0 0 0 7px rgba(18,161,80,0)}
+  100%{box-shadow:0 0 0 0 rgba(18,161,80,0)}
+}
+
+/* ─── ÁREA DE MENSAJES (el papel) ─────────────────────────────── */
+.chat-messages{
+  flex:1;
+  overflow-y:auto;
+  padding:22px 18px 8px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  background-color:var(--papel);
+  background-image:
+    linear-gradient(var(--cuadricula) 1px,transparent 1px),
+    linear-gradient(90deg,var(--cuadricula) 1px,transparent 1px);
+  background-size:var(--paso) var(--paso);
+  scroll-behavior:smooth;
+}
+.chat-messages::-webkit-scrollbar{width:8px}
+.chat-messages::-webkit-scrollbar-thumb{
+  background:rgba(20,33,58,.16);border-radius:99px;
+  border:2px solid transparent;background-clip:content-box;
+}
+
+.message{
+  max-width:86%;
+  padding:12px 15px;
+  font-size:.93rem;
+  line-height:1.55;
+  border-radius:14px;
+  animation:entrar .22s ease-out both;
+  overflow-wrap:anywhere;
+}
+@keyframes entrar{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+
+/* El asistente escribe sobre el papel, con el renglón rojo del margen */
+.bot-message{
+  align-self:flex-start;
+  background:var(--papel-alto);
+  border:1px solid var(--linea);
+  border-left:3px solid var(--rojo);
+  border-radius:4px 14px 14px 4px;
+  box-shadow:0 1px 2px rgba(20,33,58,.04);
+}
+.bot-message strong{font-weight:600;color:var(--tinta)}
+.bot-message a{color:var(--verde-hondo);text-decoration:underline;text-underline-offset:2px}
+
+/* El estudiante, en el verde de la marca */
+.user-message{
+  align-self:flex-end;
+  background:var(--verde);
+  color:#fff;
+  border-radius:14px 14px 4px 14px;
+  box-shadow:0 2px 10px -4px rgba(18,161,80,.7);
+}
+.user-message a{color:#fff;text-decoration:underline}
+
+/* Puntos de "escribiendo" */
+.typing-indicator{
+  display:flex;gap:5px;align-items:center;
+  padding:15px;width:fit-content;
+}
+.typing-indicator span{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--grafito);opacity:.4;
+  animation:rebote 1.2s infinite ease-in-out;
+}
+.typing-indicator span:nth-child(2){animation-delay:.16s}
+.typing-indicator span:nth-child(3){animation-delay:.32s}
+@keyframes rebote{
+  0%,60%,100%{transform:translateY(0);opacity:.35}
+  30%{transform:translateY(-5px);opacity:.9}
+}
+
+/* ─── RESPUESTAS RÁPIDAS ──────────────────────────────────────── */
+.quick-replies{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  padding:0 18px;
+  flex-shrink:0;
+}
+.quick-replies:not(:empty){padding:12px 18px 4px}
+
+.quick-reply-btn{
+  font-family:inherit;
+  font-size:.84rem;
+  font-weight:500;
+  color:var(--verde-hondo);
+  background:var(--papel-alto);
+  border:1.5px solid rgba(18,161,80,.4);
+  padding:9px 15px;
+  border-radius:99px;
+  cursor:pointer;
+  transition:background .15s,color .15s,transform .1s;
+}
+.quick-reply-btn:hover{background:var(--verde);border-color:var(--verde);color:#fff}
+.quick-reply-btn:active{transform:scale(.97)}
+
+/* ─── SELECTORES DE FECHA Y HORA ──────────────────────────────── */
+#special-inputs-container{flex-shrink:0}
+#special-inputs-container:not(:empty){padding:12px 18px 4px}
+
+.special-input{
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.special-input input{
+  flex:1;
+  font-family:'JetBrains Mono',monospace;
+  font-size:.9rem;
+  color:var(--tinta);
+  background:var(--papel-alto);
+  border:1.5px solid var(--linea);
+  border-radius:10px;
+  padding:10px 12px;
+  min-height:44px;
+}
+.special-input input:focus{outline:none;border-color:var(--verde)}
+.special-input .quick-reply-btn{background:var(--verde);border-color:var(--verde);color:#fff}
+
+/* ─── BARRA DE ESCRITURA ──────────────────────────────────────── */
+.chat-input-area{
+  display:flex;
+  align-items:flex-end;
+  gap:8px;
+  padding:12px 14px calc(12px + env(safe-area-inset-bottom));
+  background:var(--papel-alto);
+  border-top:1px solid var(--linea);
+  flex-shrink:0;
+}
+
+#user-input{
+  flex:1;
+  font-family:inherit;
+  font-size:.93rem;
+  line-height:1.5;
+  color:var(--tinta);
+  background:var(--papel);
+  border:1.5px solid var(--linea);
+  border-radius:14px;
+  padding:11px 14px;
+  resize:none;
+  max-height:120px;
+  field-sizing:content; /* crece con el texto en navegadores que lo soportan */
+}
+#user-input::placeholder{color:var(--grafito);opacity:.7}
+#user-input:focus{outline:none;border-color:var(--verde);background:#fff}
+#user-input:disabled{opacity:.55}
+
+#upload-btn,#send-btn{
+  width:44px;height:44px;
+  flex-shrink:0;
+  display:grid;place-items:center;
+  border:none;border-radius:12px;
+  font-size:.95rem;
+  cursor:pointer;
+  transition:background .15s,transform .1s,opacity .15s;
+}
+#upload-btn{background:transparent;color:var(--grafito)}
+#upload-btn:hover{background:rgba(20,33,58,.06);color:var(--tinta)}
+#send-btn{background:var(--verde);color:#fff}
+#send-btn:hover{background:var(--verde-hondo)}
+#send-btn:active,#upload-btn:active{transform:scale(.94)}
+#send-btn:disabled,#upload-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+/* ─── MODAL DE INGRESO ────────────────────────────────────────── */
+#user-modal-overlay{
+  display:none; /* s.js lo cambia a flex */
+  position:fixed;inset:0;z-index:50;
+  align-items:center;justify-content:center;
+  padding:20px;
+  background:rgba(20,33,58,.55);
+  backdrop-filter:blur(5px);
+}
+
+#user-modal{
+  width:min(100%,394px);
+  background:var(--papel);
+  border-radius:var(--radio);
+  padding:30px 26px 26px;
+  box-shadow:0 30px 70px -25px rgba(20,33,58,.65);
+  background-image:
+    linear-gradient(var(--cuadricula) 1px,transparent 1px),
+    linear-gradient(90deg,var(--cuadricula) 1px,transparent 1px);
+  background-size:var(--paso) var(--paso);
+  animation:subir .3s cubic-bezier(.2,.8,.3,1) both;
+  position:relative;
+  overflow:hidden;
+}
+#user-modal::before{
+  content:"";position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:var(--rojo);
+}
+@keyframes subir{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+
+#user-modal h2{
+  font-size:1.32rem;
+  font-weight:700;
+  letter-spacing:-.02em;
+  margin-bottom:6px;
+}
+#user-modal > p{
+  font-size:.87rem;
+  color:var(--grafito);
+  line-height:1.55;
+  margin-bottom:22px;
+}
+
+.form-group{margin-bottom:14px}
+.form-group label{
+  display:block;
+  font-size:.72rem;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+  color:var(--grafito);
+  margin-bottom:6px;
+}
+.form-group input{
+  width:100%;
+  font-family:inherit;
+  font-size:.95rem;
+  color:var(--tinta);
+  background:var(--papel-alto);
+  border:1.5px solid var(--linea);
+  border-radius:11px;
+  padding:12px 14px;
+  min-height:46px;
+  transition:border-color .15s,box-shadow .15s;
+}
+.form-group input:focus{
+  outline:none;
+  border-color:var(--verde);
+  box-shadow:0 0 0 3px rgba(18,161,80,.14);
+}
+.form-group input::placeholder{color:var(--grafito);opacity:.6}
+
+/* El indicativo y el número son datos: van en la face monoespaciada */
+#country-code,#whatsapp-number{font-family:'JetBrains Mono',monospace;letter-spacing:.02em}
+#country-code{background:rgba(20,33,58,.05);color:var(--grafito);cursor:default}
+
+/* Indicativo y número comparten renglón */
+#user-form{display:grid;grid-template-columns:1fr 1.9fr;gap:0 12px}
+#user-form .form-group:first-of-type{grid-column:1 / -1}
+#modal-submit-btn{grid-column:1 / -1}
+
+#modal-submit-btn{
+  width:100%;
+  margin-top:8px;
+  font-family:inherit;
+  font-size:.95rem;
+  font-weight:600;
+  color:#fff;
+  background:var(--verde);
+  border:none;
+  border-radius:12px;
+  padding:14px;
+  min-height:50px;
+  cursor:pointer;
+  transition:background .15s,transform .1s;
+}
+#modal-submit-btn:hover{background:var(--verde-hondo)}
+#modal-submit-btn:active{transform:scale(.985)}
+#modal-submit-btn:disabled{opacity:.55;cursor:wait}
+
+/* ─── ACCESIBILIDAD ───────────────────────────────────────────── */
+:focus-visible{outline:2.5px solid var(--verde);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+  .chat-messages{scroll-behavior:auto}
+}
+
+/* ─── MODO OSCURO: el cuaderno se vuelve plano de ingeniería ──── */
+@media (prefers-color-scheme:dark){
+  :root{
+    --papel:#101A2E;
+    --papel-alto:#16243D;
+    --tinta:#E8EDF5;
+    --grafito:#93A0B5;
+    --linea:rgba(232,237,245,.13);
+    --cuadricula:rgba(120,170,255,.08);
+    --sombra:0 1px 2px rgba(0,0,0,.4), 0 18px 44px -20px rgba(0,0,0,.8);
+  }
+  body{background:radial-gradient(120% 90% at 50% 0%,#0C1424 0%,#080E19 100%)}
+  .chat-header{background:#0A1220}
+  .brand-logo{background:#E8EDF5;color:#0A1220}
+  #country-code{background:rgba(232,237,245,.07)}
+  .quick-reply-btn{background:transparent;color:#4FD48A;border-color:rgba(79,212,138,.45)}
+  .quick-reply-btn:hover{background:var(--verde);border-color:var(--verde);color:#fff}
+  .bot-message a{color:#4FD48A}
+}
+</style>
+</head>
+<body>
+
+<div id="user-modal-overlay">
+  <div id="user-modal" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+    <h2 id="modal-titulo">Antes de empezar</h2>
+    <p>Dejas tu WhatsApp para que podamos retomar la conversación si se cierra el chat, y para enviarte la confirmación de tu servicio.</p>
+    <form id="user-form">
+      <div class="form-group">
+        <label for="country-name">País</label>
+        <input type="text" id="country-name" list="country-list" placeholder="Escribe tu país" autocomplete="country-name" required>
+        <datalist id="country-list"></datalist>
+      </div>
+      <div class="form-group">
+        <label for="country-code">Indicativo</label>
+        <input type="text" id="country-code" placeholder="+__" readonly required tabindex="-1">
+      </div>
+      <div class="form-group">
+        <label for="whatsapp-number">WhatsApp</label>
+        <input type="tel" id="whatsapp-number" placeholder="3044435307" inputmode="numeric" autocomplete="tel-national" required>
+      </div>
+      <button type="submit" id="modal-submit-btn">Entrar al chat</button>
+    </form>
+  </div>
+</div>
+
+<div class="chat-widget-container">
+  <header class="chat-header">
+    <div class="brand-logo">
+      <span class="brand-green">easy</span><span class="brand-red">class</span>
+    </div>
+    <div class="header-info">
+      <h3>Asistente EasyClass</h3>
+      <p id="chat-status">Conectando...</p>
+    </div>
+  </header>
+
+  <div class="chat-messages" id="chat-messages" role="log" aria-live="polite" aria-label="Conversación"></div>
+
+  <div class="quick-replies" id="quick-replies"></div>
+
+  <div id="special-inputs-container"></div>
+
+  <div class="chat-input-area">
+    <input type="file" id="file-upload-input" hidden
+           accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.zip,.rar,image/*">
+    <button id="upload-btn" type="button" aria-label="Adjuntar archivo" title="Adjuntar archivo">
+      <i class="fas fa-paperclip" aria-hidden="true"></i>
+    </button>
+    <textarea id="user-input" placeholder="Escribe tu mensaje..." rows="1"
+              autocomplete="on" aria-label="Mensaje" disabled></textarea>
+    <button id="send-btn" type="button" aria-label="Enviar mensaje" disabled>
+      <i class="fas fa-paper-plane" aria-hidden="true"></i>
+    </button>
+  </div>
+</div>
+
+</body>
+</html>

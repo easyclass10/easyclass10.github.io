@@ -7,12 +7,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles2.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    
+
+    <!-- Gemini eliminado: ahora todo pasa por la Edge Function de Supabase -->
     <script type="importmap">
     {
       "imports": {
-        "@google/generative-ai": "https://esm.run/@google/generative-ai",
-        "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm"
+        "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"
       }
     }
     </script>
@@ -55,18 +55,17 @@
                 <p id="chat-status">Conectando...</p>
             </div>
         </div>
-        
+
         <div class="chat-messages" id="chat-messages"></div>
-        
+
         <div class="quick-replies" id="quick-replies"></div>
-        
+
         <div id="special-inputs-container"></div>
         <div class="chat-input-area">
             <input type="file" id="file-upload-input" style="display: none;">
             <button id="upload-btn" aria-label="Subir archivo">
                 <i class="fas fa-paperclip"></i>
             </button>
-            <!--<input type="text" id="user-input" placeholder="Escribe tu mensaje..." autocomplete="off" disabled>-->
             <textarea id="user-input" placeholder="Escribe tu mensaje..." rows="2" autocomplete="on" disabled></textarea>
             <button id="send-btn" aria-label="Enviar mensaje" disabled>
                 <i class="fas fa-paper-plane"></i>
